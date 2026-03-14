@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wca_app/core/theme/app_theme.dart';
-import 'package:wca_app/shared/widgets/main_scaffold.dart';
+import 'package:wca_app/features/splash/screens/splash_screen.dart';
 
 /// Widget raíz de la aplicación World Coffee Atlas.
 ///
@@ -17,7 +17,7 @@ class WcaApp extends StatelessWidget {
       title: 'World Coffee Atlas',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const MainScaffold(),
+      home: const SplashScreen(),
     );
   }
 }
