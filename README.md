@@ -8,4 +8,6 @@
 - *Visual Studio Code*
 - *Visual Studio 2022 Community*
 - Extensión de *Flutter*  y *Dart* en VS Code
+- Paquete de Google Fonts
+- Paquete webview_flutter
 

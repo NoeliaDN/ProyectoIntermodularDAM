@@ -18,6 +18,6 @@ class AppConstants {
   static const String apiBaseUrl = 'https://localhost:7001/api';
 
   // ── URL del dashboard de Power BI ──────────────────────────────
-  // TOD0: Meter la URL de Power BI:
-  static const String powerBiDashboardUrl = '';
+  static const String powerBiDashboardUrl =
+      'https://app.powerbi.com/view?r=eyJrIjoiMmMwODRhMGUtZTQ1ZC00ZWQxLTkxNDQtYzk1MGEzZjY5NDYwIiwidCI6IjY4NTE5ZTQ4LTgzZjMtNDM1Zi1hMzhhLTFhN2FhNzdiYTk4NyIsImMiOjh9';
 }
