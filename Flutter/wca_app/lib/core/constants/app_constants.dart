@@ -17,7 +17,13 @@ class AppConstants {
   // - En Windows/escritorio, se puede usar localhost directamente.
   static const String apiBaseUrl = 'https://localhost:7001/api';
 
-  // ── URL del dashboard de Power BI ──────────────────────────────
-  // TOD0: Meter la URL de Power BI:
-  static const String powerBiDashboardUrl = '';
+  // ── URLs del dashboard de Power BI ─────────────────────────────
+  // Dashboard de escritorio (layout horizontal, para web y desktop).
+  static const String powerBiDesktopUrl =
+      'https://app.powerbi.com/view?r=eyJrIjoiMmMwODRhMGUtZTQ1ZC00ZWQxLTkxNDQtYzk1MGEzZjY5NDYwIiwidCI6IjY4NTE5ZTQ4LTgzZjMtNDM1Zi1hMzhhLTFhN2FhNzdiYTk4NyIsImMiOjh9&pageName=f1b3b895ca4a54abef98';
+
+  // TODO: Cuando publiques el dashboard móvil, pega aquí su URL.
+  // De momento usa la misma URL que escritorio.
+  static const String powerBiMobileUrl =
+      'https://app.powerbi.com/view?r=eyJrIjoiMmMwODRhMGUtZTQ1ZC00ZWQxLTkxNDQtYzk1MGEzZjY5NDYwIiwidCI6IjY4NTE5ZTQ4LTgzZjMtNDM1Zi1hMzhhLTFhN2FhNzdiYTk4NyIsImMiOjh9&pageName=f1b3b895ca4a54abef98';
 }

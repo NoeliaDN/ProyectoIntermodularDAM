@@ -31,7 +31,7 @@ class CoffeeDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Variedades con mapas de sus regiones y productores habituales.',
+              'Variedades con mapas de regiones y productores habituales.',
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),

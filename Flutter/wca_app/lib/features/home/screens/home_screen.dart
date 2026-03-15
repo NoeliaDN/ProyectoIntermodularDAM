@@ -1,44 +1,37 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-/// Pantalla principal: Mapa global de Power BI.
+// Importamos WebView solo en móvil (Android/iOS).
+// En web usamos HtmlElementView con un iframe.
+import 'home_screen_mobile.dart' if (dart.library.html) 'home_screen_web.dart'
+    as platform;
 
-/// De momento, pongo un placeholder para comprobar que se ve todo bien antes de añadir el WebView:
+/// Pantalla principal: Mapa global de Power BI.
+///
+/// Delega la construcción del body a ficheros específicos de plataforma:
+/// - [home_screen_mobile.dart] → usa WebView (Android/iOS).
+/// - [home_screen_web.dart]    → usa un iframe HTML nativo (Chrome/Edge).
+/// - En Windows/Linux/macOS    → muestra un aviso (no soportado).
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+  bool get _isDesktop =>
+      defaultTargetPlatform == TargetPlatform.windows ||
+      defaultTargetPlatform == TargetPlatform.linux ||
+      defaultTargetPlatform == TargetPlatform.macOS;
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('World Coffee Atlas'),
+        title: const Text('Mapa Global'),
         centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.public,
-              size: 80,
-              color: theme.colorScheme.primary,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Mapa Global de Cafés',
-              style: theme.textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Integrar el dashboard de Power BI',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-      ),
+      body: _isDesktop
+          ? const Center(
+              child: Text('Abre la app en Chrome o en el móvil para ver el mapa.'),
+            )
+          : const platform.PowerBiDashboard(),
     );
   }
 }
