@@ -15,7 +15,7 @@ import 'home_screen_mobile.dart' if (dart.library.html) 'home_screen_web.dart'
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  bool get _isDesktop =>
+  bool get _isDesktop =>//en apps de escritorio ponemos un mensaje de momento
       defaultTargetPlatform == TargetPlatform.windows ||
       defaultTargetPlatform == TargetPlatform.linux ||
       defaultTargetPlatform == TargetPlatform.macOS;

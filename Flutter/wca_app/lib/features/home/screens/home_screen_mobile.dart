@@ -21,6 +21,8 @@ class _PowerBiDashboardState extends State<PowerBiDashboard> {
     super.initState();
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..enableZoom(true)//permite zoom en móvil
+      
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageFinished: (_) {
@@ -31,13 +33,23 @@ class _PowerBiDashboardState extends State<PowerBiDashboard> {
       ..loadRequest(Uri.parse(AppConstants.powerBiMobileUrl));
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
+   @override
+   Widget build(BuildContext context) {
+     return Stack(
       children: [
-        WebViewWidget(controller: _controller),
+         WebViewWidget(controller: _controller),
         if (_isLoading) const Center(child: CircularProgressIndicator()),
-      ],
-    );
-  }
+     ],
+     );
+   }
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     body: SafeArea(
+  //       child: WebViewWidget(controller: _controller),
+  //       if (_isLoading) const Center(child: CircularProgressIndicator()),
+
+  //     ),
+  //   );
+  // }
 }
