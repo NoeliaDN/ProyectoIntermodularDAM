@@ -15,4 +15,9 @@
     <ProjectReference Include="..\WCA.Infrastructure\WCA.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\Controllers\" />
+    <Folder Include="Controllers\Configuration\" />
+  </ItemGroup>
+
 </Project>
