@@ -11,3 +11,9 @@ obj/
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# ── Configuration files (no subir secretos) ───────────────────
+**/appsettings.json
+**/appsettings.*.json
+# Conservar plantilla de ejemplo para usuarios:
+!**/appsettings.example.json
