@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WCA.Domain.Entities;
 
 namespace WCA.Infrastructure.Data
 {
@@ -9,7 +10,16 @@ namespace WCA.Infrastructure.Data
         {
         }
 
-        // TOD0: Añadir DbSet aquí:
+        // TOD0: Añadir DbSetS aquí:
+        public DbSet<CafeLote> CafeLotes { get; set; } = null!;
+        public DbSet<SCA> Scas { get; set; } = null!;
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(WCADbContext).Assembly);
+        }
 
     }
 }
