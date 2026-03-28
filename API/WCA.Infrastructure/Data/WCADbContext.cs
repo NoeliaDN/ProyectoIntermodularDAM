@@ -9,7 +9,7 @@ namespace WCA.Infrastructure.Data
         {
         }
 
-        // TOD0: Añade tus DbSet aquí:
+        // TOD0: Añadir DbSet aquí:
 
     }
 }
