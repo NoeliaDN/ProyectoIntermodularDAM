@@ -2,37 +2,51 @@
 using WCA.Application.DTOs;
 using WCA.Application.Interfaces;
 using WCA.Infrastructure.Data;
+using WCA.Domain.Entities;
 
 namespace WCA.Infrastructure.Services
 {
     public class CafeLoteService : ICafeLoteService
     {
+        private readonly WCADbContext _context;
 
-        private readonly WCADbContext _db;
-
-        public CafeLoteService(WCADbContext db) => _db = db;
-
-        public async Task<IEnumerable<CafeLoteDto>> GetAllAsync(CancellationToken ct = default)
+        public CafeLoteService(WCADbContext context)
         {
-            return await _db.CafeLotes
-                .AsNoTracking()
-                .Select(e => new CafeLoteDto
-                {
-                    Id = e.Id,
-                    Nombre = e.Nombre,
-                    Descripcion = e.Descripcion,
-                    NotasCata = e.NotasCata,
-                    AltitudMin = e.AltitudMin,
-                    AltitudMax = e.AltitudMax,
-                    RegionId = e.RegionId,
-                    ProductorId = e.ProductorId,
-                    ProcesoId = e.ProcesoId,
-                    VariedadId = e.VariedadId,
-                    TuesteId = e.TuesteId,
-                    AltitudMedia = e.AltitudMedia,
-                    DescripcionExtendida = e.DescripcionExtendida
-                })
-                .ToListAsync(ct);
+            _context = context;
         }
+
+        public async Task<string?> GetCoffeeNameByIdAsync(int id, CancellationToken ct = default)
+        {
+            var cafeLote = await _context.CafeLotes
+                .AsNoTracking()
+                .FirstOrDefaultAsync(cl => cl.Id == id, ct);
+            return cafeLote?.Nombre;
+        }
+
+        public async Task<CafeLoteDto?> GetCoffeeInfoByIdAsync(int id, CancellationToken ct = default)
+        {
+            var cafeLote = await _context.CafeLotes
+                .AsNoTracking()
+                .FirstOrDefaultAsync(cl => cl.Id == id, ct);
+            if (cafeLote == null)
+                return null;
+            return new CafeLoteDto
+            {
+                Id = cafeLote.Id,
+                Nombre = cafeLote.Nombre,
+                Descripcion = cafeLote.Descripcion,
+                NotasCata = cafeLote.NotasCata,
+                AltitudMin = cafeLote.AltitudMin,
+                AltitudMax = cafeLote.AltitudMax,
+                RegionId = cafeLote.RegionId,
+                ProductorId = cafeLote.ProductorId,
+                ProcesoId = cafeLote.ProcesoId,
+                VariedadId = cafeLote.VariedadId,
+                TuesteId = cafeLote.TuesteId,
+                AltitudMedia = cafeLote.AltitudMedia,
+                DescripcionExtendida = cafeLote.DescripcionExtendida
+            };
+        }
+        
     }
 }
