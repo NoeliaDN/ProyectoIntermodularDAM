@@ -35,8 +35,10 @@ Desktop.ini
 **/WCADBProject/*.sqlproj.user
 **/WCADBProject/scripts/*.bak
 **/WCADBProject/scripts/*_bkp*.sql
+**/WCADBProject/*.dbmdl
 
 # Database artifacts (no commitear)
 **/*.publish.xml
 **/*.dacpac
 **/*.bak
+/API/WCADBProject/WCADBProject.dbmdl
