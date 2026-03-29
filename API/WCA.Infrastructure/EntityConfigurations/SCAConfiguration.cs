@@ -21,6 +21,7 @@ namespace WCA.Infrastructure.EntityConfigurations
 
             //Columna calculada:
             builder.Property(s => s.PuntuacionSCA)
+                   .HasPrecision(4, 2)
                    .HasComputedColumnSql("CONVERT([decimal](4,2),round(((((([Acidez]+[Cuerpo])+[Dulzor])+[Aroma])+[Retrogusto])+[Balance])/(6.0),(2)))", stored: false);
             
             //Relación:

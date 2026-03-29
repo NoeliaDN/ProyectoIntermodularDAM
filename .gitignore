@@ -1,5 +1,7 @@
-# ── Visual Studio ─────────────────────────────────────────────
+# Visual Studio / .NET
 .vs/
+bin/
+obj/
 *.user
 *.suo
 
@@ -17,3 +19,24 @@ Desktop.ini
 **/appsettings.*.json
 # Conservar plantilla de ejemplo para usuarios:
 !**/appsettings.example.json
+
+# Environment files and secrets
+**/.env
+**/.env.*
+**/*.pfx
+**/*.pem
+**/*.jks
+
+# SQL Server Database Project y backups
+**/WCADBProject/bin/
+**/WCADBProject/obj/
+**/WCADBProject/*.dacpac
+**/WCADBProject/*.publish.xml
+**/WCADBProject/*.sqlproj.user
+**/WCADBProject/scripts/*.bak
+**/WCADBProject/scripts/*_bkp*.sql
+
+# Database artifacts (no commitear)
+**/*.publish.xml
+**/*.dacpac
+**/*.bak

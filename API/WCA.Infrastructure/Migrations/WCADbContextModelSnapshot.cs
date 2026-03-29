@@ -20,6 +20,117 @@ namespace WCA.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("WCA.Domain.Entities.CafeLote", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AltitudMax")
+                        .HasColumnType("int");
+
+                    b.Property<double>("AltitudMedia")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("float")
+                        .HasComputedColumnSql("([AltitudMin]+[AltitudMax])/(2.0)", false);
+
+                    b.Property<int>("AltitudMin")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Descripcion")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("DescripcionExtendida")
+                        .HasColumnType("NVARCHAR(MAX)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("NotasCata")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<int>("ProcesoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RegionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TuesteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VariedadId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LoteCafe", "cafe");
+                });
+
+            modelBuilder.Entity("WCA.Domain.Entities.SCA", b =>
+                {
+                    b.Property<int>("LoteCafeId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Acidez")
+                        .HasPrecision(4, 2)
+                        .HasColumnType("decimal(4,2)");
+
+                    b.Property<decimal>("Aroma")
+                        .HasPrecision(4, 2)
+                        .HasColumnType("decimal(4,2)");
+
+                    b.Property<decimal>("Balance")
+                        .HasPrecision(4, 2)
+                        .HasColumnType("decimal(4,2)");
+
+                    b.Property<decimal>("Cuerpo")
+                        .HasPrecision(4, 2)
+                        .HasColumnType("decimal(4,2)");
+
+                    b.Property<decimal>("Dulzor")
+                        .HasPrecision(4, 2)
+                        .HasColumnType("decimal(4,2)");
+
+                    b.Property<decimal>("PuntuacionSCA")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasPrecision(4, 2)
+                        .HasColumnType("decimal(4,2)")
+                        .HasComputedColumnSql("CONVERT([decimal](4,2),round(((((([Acidez]+[Cuerpo])+[Dulzor])+[Aroma])+[Retrogusto])+[Balance])/(6.0),(2)))", false);
+
+                    b.Property<decimal>("Retrogusto")
+                        .HasPrecision(4, 2)
+                        .HasColumnType("decimal(4,2)");
+
+                    b.HasKey("LoteCafeId");
+
+                    b.ToTable("SCA", "cafe");
+                });
+
+            modelBuilder.Entity("WCA.Domain.Entities.SCA", b =>
+                {
+                    b.HasOne("WCA.Domain.Entities.CafeLote", "CafeLote")
+                        .WithOne("Sca")
+                        .HasForeignKey("WCA.Domain.Entities.SCA", "LoteCafeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CafeLote");
+                });
+
+            modelBuilder.Entity("WCA.Domain.Entities.CafeLote", b =>
+                {
+                    b.Navigation("Sca");
+                });
 #pragma warning restore 612, 618
         }
     }

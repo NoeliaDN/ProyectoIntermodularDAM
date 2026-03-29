@@ -1,0 +1,3 @@
+﻿CREATE SCHEMA [cafe]
+    AUTHORIZATION [dbo];
+
