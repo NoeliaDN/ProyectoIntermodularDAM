@@ -1,50 +1,59 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WCA.Application.DTOs;
 using WCA.Application.Interfaces;
-using WCA.Infrastructure.Data;
 using WCA.Domain.Entities;
+using WCA.Domain.Repositories;
+using WCA.Infrastructure.Data;
+using WCA.Infrastructure.Repositories;
 
 namespace WCA.Infrastructure.Services
 {
     public class CafeLoteService : ICafeLoteService
     {
-        private readonly WCADbContext _context;
+        private readonly ICafeLoteRepository _cafeLoteRepository;
 
-        public CafeLoteService(WCADbContext context)
+        public CafeLoteService(ICafeLoteRepository cafeLoteRepository)
         {
-            _context = context;
+            _cafeLoteRepository = cafeLoteRepository;
         }
 
-        public async Task<string?> GetCoffeeNameByIdAsync(int id, CancellationToken ct = default)
+
+
+        // Nombres de cafés para seleccionar:
+        public async Task<IReadOnlyList<CafeNombreDto>> GetAllCoffeeNamesAsync(CancellationToken ct = default)
         {
-            var cafeLote = await _context.CafeLotes
-                .AsNoTracking()
-                .FirstOrDefaultAsync(cl => cl.Id == id, ct);
-            return cafeLote?.Nombre;
+            var lotes = await _cafeLoteRepository.GetAllCoffeesAsync(ct);
+
+            return lotes
+                .Select(l => new CafeNombreDto
+                {
+                    Id = l.Id,
+                    Nombre = l.Nombre
+                })
+                .ToList();
         }
 
+        // Datos del café sin SCA:
         public async Task<CafeLoteDto?> GetCoffeeInfoByIdAsync(int id, CancellationToken ct = default)
         {
-            var cafeLote = await _context.CafeLotes
-                .AsNoTracking()
-                .FirstOrDefaultAsync(cl => cl.Id == id, ct);
-            if (cafeLote == null)
-                return null;
+            var lote = await _cafeLoteRepository.GetOneCoffeeByIdAsync(id, ct);
+            if (lote is null) return null;
+
             return new CafeLoteDto
             {
-                Id = cafeLote.Id,
-                Nombre = cafeLote.Nombre,
-                Descripcion = cafeLote.Descripcion,
-                NotasCata = cafeLote.NotasCata,
-                AltitudMin = cafeLote.AltitudMin,
-                AltitudMax = cafeLote.AltitudMax,
-                RegionId = cafeLote.RegionId,
-                ProductorId = cafeLote.ProductorId,
-                ProcesoId = cafeLote.ProcesoId,
-                VariedadId = cafeLote.VariedadId,
-                TuesteId = cafeLote.TuesteId,
-                AltitudMedia = cafeLote.AltitudMedia,
-                DescripcionExtendida = cafeLote.DescripcionExtendida
+                Id = lote.Id,
+                Nombre = lote.Nombre,
+                Descripcion = lote.Descripcion,
+                NotasCata = lote.NotasCata,
+                AltitudMin = lote.AltitudMin,
+                AltitudMax = lote.AltitudMax,
+                RegionId = lote.RegionId,
+                ProductorId = lote.ProductorId,
+                ProcesoId = lote.ProcesoId,
+                VariedadId = lote.VariedadId,
+                TuesteId = lote.TuesteId,
+                AltitudMedia = lote.AltitudMedia,
+                DescripcionExtendida = lote.DescripcionExtendida
             };
         }
         

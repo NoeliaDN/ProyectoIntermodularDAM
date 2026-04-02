@@ -26,7 +26,7 @@ namespace WCA.Infrastructure.Repositories
         public async Task<CafeLote?> GetOneCoffeeByIdAsync(int id, CancellationToken ct = default)
         {
             return await _context.CafeLotes
-            .AsNoTracking()
+            .AsNoTracking()              
             .Include(l => l.Region).ThenInclude(r => r.Pais)
             .Include(l => l.Productor).ThenInclude(p => p.TipoProductor)
             .Include(l => l.Proceso)

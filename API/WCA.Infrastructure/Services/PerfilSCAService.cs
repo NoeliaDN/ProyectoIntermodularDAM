@@ -1,35 +1,35 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WCA.Application.DTOs;
+using WCA.Application.Interfaces;
+using WCA.Domain.Repositories;
 using WCA.Infrastructure.Data;
+using WCA.Infrastructure.Repositories;
 
 namespace WCA.Infrastructure.Services
 {
-    public  class PerfilSCAService
+    public  class PerfilSCAService : IPerfilSCAService
     {
-        private readonly WCADbContext _context;
+        private readonly ISCARepository _scaRepository;
 
-        public PerfilSCAService(WCADbContext context)
+        public PerfilSCAService(ISCARepository scaRepository)
         {
-            _context = context;
+            _scaRepository = scaRepository;
         }
 
         public async Task<SCADto?> GetCoffeeSCAByIdAsync(int id, CancellationToken ct = default)
         {
-            var cafeLote = await _context.CafeLotes
-                .AsNoTracking()
-                .Include(cl => cl.Sca) // Incluir la entidad SCA relacionada
-                .FirstOrDefaultAsync(cl => cl.Id == id, ct);
-            if (cafeLote == null || cafeLote.Sca == null)
-                return null;
+            var sca = await _scaRepository.GetOneByCoffeeIdAsync(id, ct);
+            if (sca is null) return null;
+
             return new SCADto
             {
-                Acidez = cafeLote.Sca.Acidez,
-                Cuerpo = cafeLote.Sca.Cuerpo,
-                Dulzor = cafeLote.Sca.Dulzor,
-                Aroma = cafeLote.Sca.Aroma,
-                Retrogusto = cafeLote.Sca.Retrogusto,
-                Balance = cafeLote.Sca.Balance,
-                PuntuacionSCA = cafeLote.Sca.PuntuacionSCA
+                Acidez = sca.Acidez,
+                Cuerpo = sca.Cuerpo,
+                Dulzor = sca.Dulzor,
+                Aroma = sca.Aroma,
+                Retrogusto = sca.Retrogusto,
+                Balance = sca.Balance,
+                PuntuacionSCA = sca.PuntuacionSCA
             };
 
         }

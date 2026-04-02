@@ -21,7 +21,7 @@ namespace WCA.Infrastructure.Repositories
             .ToListAsync(ct);
         }
 
-        public async Task<SCA?> GetOneByIdAsync(int cafeId, CancellationToken ct = default)
+        public async Task<SCA?> GetOneByCoffeeIdAsync(int cafeId, CancellationToken ct = default)
         {
             return await _context.Scas
                 .AsNoTracking()
