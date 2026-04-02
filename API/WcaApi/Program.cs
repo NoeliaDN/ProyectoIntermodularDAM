@@ -26,6 +26,7 @@ namespace WcaApi
 
             // Services:
             builder.Services.AddScoped<ICafeLoteService, CafeLoteService>();
+            builder.Services.AddScoped<IPerfilSCAService, PerfilSCAService>();
 
             var app = builder.Build();
 
