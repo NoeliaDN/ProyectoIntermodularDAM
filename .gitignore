@@ -42,3 +42,4 @@ Desktop.ini
 **/*.dacpac
 **/*.bak
 /API/WCADBProject/WCADBProject.dbmdl
+/API/WCADBProject/WCADBProject/WCADBProject.jfm

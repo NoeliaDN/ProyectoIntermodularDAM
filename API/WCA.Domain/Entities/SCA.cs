@@ -2,7 +2,6 @@
 {
     public class SCA
     {
-
         public int LoteCafeId { get; set; }
         public decimal Acidez { get; set; }
         public decimal Cuerpo { get; set; }

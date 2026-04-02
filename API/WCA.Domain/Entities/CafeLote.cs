@@ -19,6 +19,11 @@
         public string? DescripcionExtendida { get; set; }
        
         public SCA? Sca { get; set; }  // Navegación opcional a SCA
+        public Region Region { get; set; } = null!;
+        public Productor Productor { get; set; } = null!;
+        public Proceso Proceso { get; set; } = null!;
+        public Variedad Variedad { get; set; } = null!;
+        public Tueste Tueste { get; set; } = null!;
 
     }
 }
