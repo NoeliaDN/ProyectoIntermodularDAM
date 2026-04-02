@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using WCA.Infrastructure.Data;
 using WCA.Application.Interfaces;
 using WCA.Infrastructure.Services;
+using WCA.Domain.Repositories;
+using WCA.Infrastructure.Repositories;
 
 namespace WcaApi
 {
@@ -27,6 +29,8 @@ namespace WcaApi
             // Services:
             builder.Services.AddScoped<ICafeLoteService, CafeLoteService>();
             builder.Services.AddScoped<IPerfilSCAService, PerfilSCAService>();
+            builder.Services.AddScoped<ICafeLoteRepository, CafeLoteRepository>();
+            builder.Services.AddScoped<ISCARepository, SCARepository>();
 
             var app = builder.Build();
 
