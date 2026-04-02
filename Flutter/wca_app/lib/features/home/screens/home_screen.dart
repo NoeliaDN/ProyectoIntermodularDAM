@@ -16,9 +16,10 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   bool get _isDesktop =>//en apps de escritorio ponemos un mensaje de momento
-      defaultTargetPlatform == TargetPlatform.windows ||
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.windows ||
       defaultTargetPlatform == TargetPlatform.linux ||
-      defaultTargetPlatform == TargetPlatform.macOS;
+      defaultTargetPlatform == TargetPlatform.macOS);
 
   @override
   Widget build(BuildContext context) {

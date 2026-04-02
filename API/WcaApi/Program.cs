@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using WCA.Infrastructure.Data;
+using WCA.Application.Interfaces;
+using WCA.Infrastructure.Services;
 
 namespace WcaApi
 {
@@ -7,12 +11,21 @@ namespace WcaApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Obtener la cadena de conexión (user-secrets)
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                                   ?? throw new InvalidOperationException("Define la cadena de conexión 'DefaultConnection'.");
+
+            // Servicios:
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // DbContext:
+            builder.Services.AddDbContext<WCADbContext>(options => options.UseSqlServer(connectionString));
+
+            // Services:
+            builder.Services.AddScoped<ICafeLoteService, CafeLoteService>();
 
             var app = builder.Build();
 
