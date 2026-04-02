@@ -56,6 +56,28 @@ namespace WCA.Infrastructure.Services
                 DescripcionExtendida = lote.DescripcionExtendida
             };
         }
-        
+
+        public async Task<CafeDetalleDto?> GetCoffeeDetailAsync(int id, CancellationToken ct = default)
+        {
+            var lote = await _cafeLoteRepository.GetOneCoffeeByIdAsync(id, ct);
+            if (lote is null) return null;
+
+            return new CafeDetalleDto
+            {
+                CafeId = lote.Id,
+                CafeNombre = lote.Nombre,
+
+                Variedad = lote.Variedad.Nombre,
+                Especie = lote.Variedad.Especie,
+                VariedadDescripcion = lote.Variedad.Descripcion,
+
+                Productor = lote.Productor.Nombre,
+                TipoProductor = lote.Productor.TipoProductor.Tipo,
+                Region = lote.Region.Nombre,
+                Pais = lote.Region.Pais.Nombre
+            };
+        }
+
+
     }
 }
