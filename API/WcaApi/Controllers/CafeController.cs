@@ -80,7 +80,28 @@ namespace WCA.Api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Obtiene la información de variedad, productor y localización de un café.
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint se utiliza en la página de detalle para mostrar información
+        /// de variedad, tipo de productor, región y país (por ejemplo, en un mapa de Power BI).
+        /// </remarks>
+        /// <param name="id">Identificador del café (LoteCafeId).</param>
+        /// <param name="ct">Token de cancelación.</param>
+        /// <returns>Detalle de variedad, productor y origen del café.</returns>
+        /// <response code="200">Devuelve el detalle de variedad y productor.</response>
+        /// <response code="404">No se ha encontrado un café con el Id especificado.</response>        
+        [HttpGet("{id:int}/detalle")]
+        [ProducesResponseType(typeof(CafeDetalleDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetCafeDetalle(int id, CancellationToken ct)
+        {
+            var result = await _cafeLoteService.GetCoffeeDetailAsync(id, ct);
+            if (result is null) return NotFound();
 
-        
+            return Ok(result);
+        }
+
     }
 }
