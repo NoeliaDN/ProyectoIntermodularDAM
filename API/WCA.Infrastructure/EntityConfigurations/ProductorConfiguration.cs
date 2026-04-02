@@ -15,8 +15,8 @@ namespace WCA.Infrastructure.EntityConfigurations
                    .IsRequired()
                    .HasMaxLength(150);
 
-            // Si decides añadir AnioFundacion en la entidad:
-            builder.Property<int?>("AnioFundacion");
+            builder.Property(p => p.DescripcionBreve)
+                               .HasMaxLength(500);
 
             builder.HasOne(p => p.TipoProductor)
                    .WithMany(t => t.Productores)

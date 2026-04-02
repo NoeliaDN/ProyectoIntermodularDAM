@@ -9,10 +9,16 @@ namespace WCA.Infrastructure.Data
             : base(options)
         {
         }
-
-        // TOD0: Añadir DbSetS aquí:
-        public DbSet<CafeLote> CafeLotes { get; set; } = null!;
-        public DbSet<SCA> Scas { get; set; } = null!;
+        //DBSets:
+        public DbSet<CafeLote> CafeLotes => Set<CafeLote>();
+        public DbSet<SCA> Scas => Set<SCA>();
+        public DbSet<Region> Regiones => Set<Region>();
+        public DbSet<Pais> Paises => Set<Pais>();
+        public DbSet<Productor> Productores => Set<Productor>();
+        public DbSet<TipoProductor> TiposProductor => Set<TipoProductor>();
+        public DbSet<Proceso> Procesos => Set<Proceso>();
+        public DbSet<Tueste> Tuestes => Set<Tueste>();
+        public DbSet<Variedad> Variedades => Set<Variedad>();
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
