@@ -19,6 +19,8 @@ namespace WCA.Application.DTOs
 
         // Productor + localización:
         public string Productor { get; set; } = default!;
+
+        public string? ProductorDescripcion { get; set; } = default!;
         public string TipoProductor { get; set; } = default!;
         public string Region { get; set; } = default!;
         public string Pais { get; set; } = default!;

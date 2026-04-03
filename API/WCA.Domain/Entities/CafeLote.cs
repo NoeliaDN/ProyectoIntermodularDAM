@@ -14,7 +14,7 @@
         public int VariedadId { get; set; }
         public int TuesteId { get; set; }
 
-        public double AltitudMedia { get; set; } //columna computada
+        public decimal AltitudMedia { get; set; } //columna computada
 
         public string? DescripcionExtendida { get; set; }
        

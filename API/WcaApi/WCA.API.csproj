@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>da141af5-7c88-4820-8e0a-59c224bf56af</UserSecretsId>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.25">
       <PrivateAssets>all</PrivateAssets>
@@ -21,8 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Controllers\" />
-    <Folder Include="Controllers\Configuration\" />
+    <TypeScriptCompile Include="Controllers\CafeController.cs" />
   </ItemGroup>
 
 </Project>
