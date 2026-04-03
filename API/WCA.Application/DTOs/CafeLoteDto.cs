@@ -13,7 +13,7 @@
         public int ProcesoId { get; set; }
         public int VariedadId { get; set; }
         public int TuesteId { get; set; }
-        public double AltitudMedia { get; set; }
+        public decimal AltitudMedia { get; set; }
         public string? DescripcionExtendida { get; set; }
     }
 }

@@ -72,6 +72,7 @@ namespace WCA.Infrastructure.Services
                 VariedadDescripcion = lote.Variedad.Descripcion,
 
                 Productor = lote.Productor.Nombre,
+                ProductorDescripcion = lote.Productor.DescripcionBreve,
                 TipoProductor = lote.Productor.TipoProductor.Tipo,
                 Region = lote.Region.Nombre,
                 Pais = lote.Region.Pais.Nombre
