@@ -46,7 +46,6 @@ namespace WCA.Api.Controllers
         /// <param name="ct">Token de cancelación.</param>
         /// <returns>Datos del café.</returns>
         /// <response code="200">Devuelve los datos del café.</response>
-        /// <response code="404">No se ha encontrado un café con el Id especificado.</response>
         [HttpGet("/info/{id:int}")] // GET api/cafes/info/{id}
         [ProducesResponseType(typeof(CafeLoteDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -68,7 +67,6 @@ namespace WCA.Api.Controllers
         /// <param name="ct">Token de cancelación.</param>
         /// <returns>Perfil SCA del café.</returns>
         /// <response code="200">Devuelve el perfil SCA del café.</response>
-        /// <response code="404">No se ha encontrado perfil SCA para el café indicado.</response>
         [HttpGet("{id:int}/sca")]
         [ProducesResponseType(typeof(SCADto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -85,13 +83,12 @@ namespace WCA.Api.Controllers
         /// </summary>
         /// <remarks>
         /// Este endpoint se utiliza en la página de detalle para mostrar información
-        /// de variedad, tipo de productor, región y país (por ejemplo, en un mapa de Power BI).
+        /// de variedad, tipo de productor, región y país, junto con mapas de Power BI.
         /// </remarks>
         /// <param name="id">Identificador del café (LoteCafeId).</param>
         /// <param name="ct">Token de cancelación.</param>
         /// <returns>Detalle de variedad, productor y origen del café.</returns>
         /// <response code="200">Devuelve el detalle de variedad y productor.</response>
-        /// <response code="404">No se ha encontrado un café con el Id especificado.</response>        
         [HttpGet("{id:int}/detalle")]
         [ProducesResponseType(typeof(CafeDetalleDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
