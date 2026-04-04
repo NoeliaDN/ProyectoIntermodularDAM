@@ -10,7 +10,7 @@ namespace WCA.Api.Controllers
     /// </summary>
     /// <remarks>
     /// Expone endpoints orientados a la página de Variedades del cliente.
-    /// Permite obtener datos de una variedad concreta y, si existen,
+    /// Permite obtener nombres y datos de una variedad concreta y, si existen,
     /// los datos de un café asociado (productor, región, país, etc.).
     /// </remarks>
     [ApiController]
@@ -193,7 +193,7 @@ namespace WCA.Api.Controllers
         /// <returns>
         /// 200 OK con un <see cref="VariedadConCafesDto"/> o 404 si la variedad no existe.
         /// </returns>
-        [HttpGet("{id:int}/detalles")]
+        [HttpGet("/detalles/{id:int}")]
         [ProducesResponseType(typeof(VariedadConCafesDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetDetalles(int id, CancellationToken ct)
@@ -201,7 +201,7 @@ namespace WCA.Api.Controllers
             var variedad = await _cafeDetallesService.GetVariedadConDetallesAsync(id, ct);
             if (variedad is null) return NotFound();
 
-            // Proyectamos todos los cafés asociados a esta variedad
+            // Proyectamos todos los cafés asociados a esta variedad:
             var cafes = variedad.LotesCafe
                 .Where(l => l.Productor != null && l.Region != null && l.Region.Pais != null)
                 .Select(l => new VariedadCafeDto
