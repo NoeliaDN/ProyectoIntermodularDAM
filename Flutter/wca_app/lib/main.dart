@@ -5,7 +5,7 @@ import 'package:wca_app/app.dart';
 ///
 /// Siguiendo la convención de Flutter, main.dart solo se encarga de
 /// llamar a [runApp] con el widget raíz. Toda la configuración de
-/// MaterialApp (tema, rutas, etc.) se define en [WcaApp]
+/// MaterialApp se define en [WcaApp]
 void main() {
   runApp(const WcaApp());
 }

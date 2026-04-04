@@ -9,14 +9,11 @@ namespace WCA.Api.Controllers
     public class CafesController : ControllerBase
     {
         private readonly ICafeLoteService _cafeLoteService;
-        private readonly IPerfilSCAService _perfilScaService;
 
-        public CafesController(
-            ICafeLoteService cafeLoteService,
-            IPerfilSCAService perfilScaService)
+        public CafesController(ICafeLoteService cafeLoteService)
         {
             _cafeLoteService = cafeLoteService;
-            _perfilScaService = perfilScaService;
+           
         }
 
         /// <summary>
@@ -57,27 +54,7 @@ namespace WCA.Api.Controllers
             return Ok(result);
         }
 
-        /// <summary>
-        /// Obtiene el perfil SCA de un café concreto.
-        /// </summary>
-        /// <remarks>
-        /// Los datos devueltos se utilizan para representar un gráfico radial en el front.
-        /// </remarks>
-        /// <param name="id">Identificador del café (LoteCafeId).</param>
-        /// <param name="ct">Token de cancelación.</param>
-        /// <returns>Perfil SCA del café.</returns>
-        /// <response code="200">Devuelve el perfil SCA del café.</response>
-        [HttpGet("{id:int}/sca")]
-        [ProducesResponseType(typeof(SCADto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetCafeSca(int id, CancellationToken ct)
-        {
-            var result = await _perfilScaService.GetCoffeeSCAByIdAsync(id, ct);
-            if (result is null) return NotFound();
-
-            return Ok(result);
-        }
-
+        
         /// <summary>
         /// Obtiene la información de variedad, productor y localización de un café.
         /// </summary>
@@ -91,7 +68,6 @@ namespace WCA.Api.Controllers
         /// <response code="200">Devuelve el detalle de variedad y productor.</response>
         [HttpGet("{id:int}/detalle")]
         [ProducesResponseType(typeof(CafeDetalleDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetCafeDetalle(int id, CancellationToken ct)
         {
             var result = await _cafeLoteService.GetCoffeeDetailAsync(id, ct);
