@@ -26,11 +26,13 @@ namespace WcaApi
             // DbContext:
             builder.Services.AddDbContext<WCADbContext>(options => options.UseSqlServer(connectionString));
 
-            // Services:
-            builder.Services.AddScoped<ICafeLoteService, CafeLoteService>();
-            builder.Services.AddScoped<IPerfilSCAService, PerfilSCAService>();
+            // Services:            
             builder.Services.AddScoped<ICafeLoteRepository, CafeLoteRepository>();
             builder.Services.AddScoped<ISCARepository, SCARepository>();
+            builder.Services.AddScoped<IVariedadRepository, VariedadRepository>();
+            builder.Services.AddScoped<ICafeLoteService, CafeLoteService>();
+            builder.Services.AddScoped<IPerfilSCAService, PerfilSCAService>();
+            builder.Services.AddScoped<ICafeDetallesService, CafeDetallesService>();
 
             var app = builder.Build();
 
