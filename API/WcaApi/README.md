@@ -189,10 +189,12 @@ Controlador `CafesController`:
 La BD `WorldCoffeeDB` organiza la información en varios esquemas:
 
 - `cafe.LoteCafe`  
-  - Lote de café con: `AltitudMin`, `AltitudMax`, `AltitudMedia` (columna computada), `RegionId`, `ProductorId`, `ProcesoId`, `VariedadId`, `TuesteId`, etc.
-- `origen.Region`, `origen.Pais`, `origen.Productor`  
+  - Lote de café con: `Nombre`, `AltitudMin`, `AltitudMax`, `AltitudMedia` (columna computada), `RegionId`, `ProductorId`, `ProcesoId`, `VariedadId`, `TuesteId`, etc.
+- `cafe.SCA`
+   - Perfil sensorial SCA con: `Acidez`, `Cuerpo`, `Dulzor`, `Aroma`, `Retrogusto`, `Balance` y `PuntuacionSCA`  (columna computada--> media de todos los atributos).
+- `origen.Region`, `origen.Pais`, `origen.Productor` y  `origen.TipoProductor` 
   - Información de origen geográfico y productores.
-- `maestra.Variedad`, `maestra.Tueste`, `maestra.Proceso`, `maestra.TipoProductor`  
+- `maestra.Variedad`, `maestra.Tueste` y `maestra.Proceso`  
   - Tablas maestras para clasificar variedades, procesos, tuestes y tipos de productor.
 
 **Ventajas:**
