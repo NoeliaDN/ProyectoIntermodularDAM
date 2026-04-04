@@ -68,7 +68,7 @@ https://learn.microsoft.com/es-es/dotnet/architecture/microservices/microservice
   - Inyección de dependencias integrada en ASP.NET Core
 
 - **Base de datos**
-  - SQL Server (2019/2022 o Express)
+  - SQL Server Express 2025
   - Scripts y proyecto de BD (`WCADBProject`) para creación, seed y copias de seguridad
 
 - **Herramientas**
