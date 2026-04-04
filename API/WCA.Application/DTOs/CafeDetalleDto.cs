@@ -12,6 +12,7 @@ namespace WCA.Application.DTOs
         public string CafeNombre { get; set; } = String.Empty;
 
         // Variedad:
+        public int VariedadId { get; set; }
         public string Variedad { get; set; } = String.Empty;
         public string Especie { get; set; } = String.Empty;
         public string? VariedadDescripcion { get; set; } = String.Empty;

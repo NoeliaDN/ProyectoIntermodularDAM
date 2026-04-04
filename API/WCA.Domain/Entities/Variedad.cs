@@ -8,6 +8,7 @@
         public string? Descripcion { get; set; }
 
         public ICollection<CafeLote> LotesCafe { get; set; } = new List<CafeLote>();
+        
 
     }
 }

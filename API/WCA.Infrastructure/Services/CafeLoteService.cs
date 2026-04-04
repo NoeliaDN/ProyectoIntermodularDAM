@@ -57,6 +57,7 @@ namespace WCA.Infrastructure.Services
             };
         }
 
+        // Detalle de variedad, productor y localización:
         public async Task<CafeDetalleDto?> GetCoffeeDetailAsync(int id, CancellationToken ct = default)
         {
             var lote = await _cafeLoteRepository.GetOneCoffeeByIdAsync(id, ct);
@@ -67,6 +68,7 @@ namespace WCA.Infrastructure.Services
                 CafeId = lote.Id,
                 CafeNombre = lote.Nombre,
 
+                VariedadId = lote.VariedadId,
                 Variedad = lote.Variedad.Nombre,
                 Especie = lote.Variedad.Especie,
                 VariedadDescripcion = lote.Variedad.Descripcion,
