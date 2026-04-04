@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WCA.Domain.Entities;
+using WCA.Domain.Repositories;
 using WCA.Infrastructure.Data;
 
 namespace WCA.Infrastructure.Repositories
@@ -29,4 +30,5 @@ namespace WCA.Infrastructure.Repositories
                 .Include(p => p.TipoProductor)
                 .FirstOrDefaultAsync(p => p.Id == id, ct);
         }
+    }
 }

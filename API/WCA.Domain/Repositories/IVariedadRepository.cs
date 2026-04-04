@@ -8,7 +8,7 @@ namespace WCA.Domain.Repositories
         Task<Variedad?> GetOneByVarietyIdAsync(int id, CancellationToken ct = default);
 
         // Obtener una variedad con al menos un lote y sus relaciones:
-        Task<Variedad?> GetVariedadWithDetallesAsync(int variedadId, CancellationToken ct = default);
+        Task<Variedad?> GetVarietyWithDetailsAsync(int variedadId, CancellationToken ct = default);
 
     }
 }

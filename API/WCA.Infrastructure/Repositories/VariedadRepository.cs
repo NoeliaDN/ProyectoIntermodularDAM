@@ -33,7 +33,7 @@ namespace WCA.Infrastructure.Repositories
                 .FirstOrDefaultAsync(v => v.Id == id, ct);
         }
 
-        public async Task<Variedad?> GetVariedadWithDetallesAsync(int variedadId, CancellationToken ct = default)
+        public async Task<Variedad?> GetVarietyWithDetailsAsync(int variedadId, CancellationToken ct = default)
         {
             return await _context.Variedades
                 .AsNoTracking()

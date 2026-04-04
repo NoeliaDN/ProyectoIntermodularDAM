@@ -30,6 +30,7 @@ namespace WcaApi
             builder.Services.AddScoped<ICafeLoteRepository, CafeLoteRepository>();
             builder.Services.AddScoped<ISCARepository, SCARepository>();
             builder.Services.AddScoped<IVariedadRepository, VariedadRepository>();
+            builder.Services.AddScoped<IProductorRepository, ProductorRepository>();
             builder.Services.AddScoped<ICafeLoteService, CafeLoteService>();
             builder.Services.AddScoped<IPerfilSCAService, PerfilSCAService>();
             builder.Services.AddScoped<ICafeDetallesService, CafeDetallesService>();
