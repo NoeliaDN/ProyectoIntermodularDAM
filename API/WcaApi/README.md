@@ -138,12 +138,12 @@ En el proyecto `WcaApi`:
 
 Opciones:
 
-- **Usar los scripts SQL** del proyecto `WCADBProject`:
+- **Usar los scripts SQL** del proyecto `WCADBProject` (no aparecerán posiblemente en GitHub hasta el día de la entrega):
   - Ejecutar `_bkp_CREATE_WorldCoffeeDB_1.sql` para crear la base.
   - Ejecutar `_bkp_SeedData_WorldCoffeeDB.sql` para datos de ejemplo.
 
 - **Usar EF Core (migraciones)**:
-  - Crear migración con _Infrastructure_ siempre como proyecto por defecto:  
+  - Crear migración con _Infrastructure_ siempre con _Infrastructure_ como proyecto por defecto:  
     `dotnet ef migrations add InitialCreate -p WCA.Infrastructure -s WcaApi`
   - Actualizar BD:  
     `dotnet ef database update -p WCA.Infrastructure -s WcaApi`
