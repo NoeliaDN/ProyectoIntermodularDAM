@@ -76,5 +76,15 @@ namespace WCA.Api.Controllers
             return Ok(result);
         }
 
+
+        //Endpoint para altitudes:
+        [HttpGet("altitud")]
+        [ProducesResponseType(typeof(IReadOnlyList<CafeAltitudesDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAltitudes(CancellationToken ct)
+        {
+            var result = await _cafeLoteService.GetAllCoffeeAltitudesAsync(ct);
+            return Ok(result);
+        }
+
     }
 }

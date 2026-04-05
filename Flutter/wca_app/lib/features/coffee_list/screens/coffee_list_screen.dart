@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import '../models/cafe_nombre_dto.dart';
 import '../models/cafe_lote_dto.dart';
 import '../models/sca_dto.dart';
+import '../models/cafe_altitudes_dto.dart';
 import '../services/coffee_api_service.dart';
 import '../widgets/sca_radar_chart.dart';
+import '../widgets/altitude_bar_chart.dart';
 
 /// Pantalla de cafés de especialidad.
 ///
@@ -28,6 +30,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
 
   // ── Estado ───────────────────────────────────────────────────────
   List<CafeNombreDto> _coffeeNames = []; // Lista para el selector
+  List<CafeAltitudesDto> _altitudesData = []; // Altitudes de todos los cafés para el gráfico
   CafeLoteDto? _selectedCoffee;           // Info del café seleccionado
   ScaDto? _scaData;                       // Perfil SCA del café seleccionado
   bool _loadingNames = true;              // ¿Estamos cargando la lista?
@@ -38,7 +41,9 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
   @override
   void initState() {
     super.initState();
-    _loadCoffeeNames(); // Cargar nombres al entrar en la pantalla
+       
+    //_loadCoffeeNames(); //cargar nombres al entrar en pantalla
+    _loadInitialData(); // Cargamos nombres y altitudes a la vez
   }
 
   @override
@@ -49,13 +54,17 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
 
   // ── Lógica de negocio ────────────────────────────────────────────
 
-  /// Carga la lista de nombres de cafés para seleccionar:.
-  Future<void> _loadCoffeeNames() async {
+  /// Carga la lista de nombres y las altitudes de todos los cafés.
+  Future<void> _loadInitialData() async {
     try {
-      final names = await _apiService.fetchCoffeeNames();
-      if (!mounted) return; // Comprobamos que el widget sigue vivo
+      final results = await Future.wait([
+        _apiService.fetchCoffeeNames(),
+        _apiService.fetchCoffeeAltitudes(),
+      ]);
+      if (!mounted) return;
       setState(() {
-        _coffeeNames = names;
+        _coffeeNames = results[0] as List<CafeNombreDto>;
+        _altitudesData = results[1] as List<CafeAltitudesDto>;
         _loadingNames = false;
       });
     } catch (e) {
@@ -66,6 +75,9 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
       });
     }
   }
+
+  // Mantenemos el nombre anterior por si queda alguna referencia interna:
+  Future<void> _loadCoffeeNames() => _loadInitialData();
 
   // Una vez seleccionado el café, llamamos a los endpoints para rellenar la info:
   Future<void> _onCoffeeSelected(int id) async {
@@ -227,7 +239,14 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
                       ],
 
                       // ── 4. Gráfico radial SCA ──
-                      if (_scaData != null) _buildScaSection(theme),
+                      if (_scaData != null) ...[  
+                        _buildScaSection(theme),
+                        const SizedBox(height: 24),
+                      ],
+
+                      // ── 5. Gráfico comparativo de altitudes ──
+                      if (_altitudesData.isNotEmpty)
+                        _buildAltitudesSection(theme),
 
                       // Espacio inferior para que el scroll no corte
                       const SizedBox(height: 40),
@@ -685,6 +704,44 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
           ],
         ),
       ],
+    );
+  }
+
+  // ── Widget: Sección altitudes comparativo ────────────────────────
+  /// Card con el gráfico de barras de altitudes de todos los cafés.
+  /// La barra del café seleccionado se resalta con el color primario.
+  Widget _buildAltitudesSection(ThemeData theme) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: theme.colorScheme.outlineVariant),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 24, 8, 16),
+        child: Column(
+          children: [
+            Text(
+              'Altitud Media del Cultivo',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Comparativa de todos los cafés · m.s.n.m.',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 16),
+            AltitudeBarChart(
+              altitudes: _altitudesData,
+              selectedId: _selectedCoffee?.id,
+            ),
+          ],
+        ),
+      ),
     );
   }
 

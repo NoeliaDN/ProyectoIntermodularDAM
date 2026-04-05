@@ -33,6 +33,25 @@ namespace WCA.Infrastructure.Services
                 .ToList();
         }
 
+        // Nombres de cafés, altitudes y codigo ISO para gráfico:
+        public async Task<IReadOnlyList<CafeAltitudesDto>> GetAllCoffeeAltitudesAsync(CancellationToken ct = default)
+        {
+            var lotes = await _cafeLoteRepository.GetAllCoffeesAsync(ct);
+
+            return lotes
+                .Select(l => new CafeAltitudesDto
+                {
+                    CafeId = l.Id,
+                    CafeNombre = l.Nombre,
+                    AltitudMin = l.AltitudMin,
+                    AltitudMax = l.AltitudMax,
+                    AltitudMedia = l.AltitudMedia,
+                    PaisISO = l.Region.Pais.CodigoISO
+
+                })
+                .ToList();
+        }
+
         // Datos del café sin SCA:
         public async Task<CafeLoteDto?> GetCoffeeInfoByIdAsync(int id, CancellationToken ct = default)
         {

@@ -9,4 +9,6 @@ public interface ICafeLoteService
 
     Task<CafeDetalleDto?> GetCoffeeDetailAsync(int id, CancellationToken ct = default);
 
+    Task<IReadOnlyList<CafeAltitudesDto>> GetAllCoffeeAltitudesAsync(CancellationToken ct = default);
+
 }
