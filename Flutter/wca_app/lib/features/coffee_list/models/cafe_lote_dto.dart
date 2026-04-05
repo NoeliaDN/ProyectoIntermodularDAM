@@ -14,6 +14,7 @@ class CafeLoteDto {
   final String? pais;
   final String? productor;
   final String? proceso;
+  final String? procesoDescripcion; // Descripción del método de proceso desde la BD
   final String? variedad;
   final String? tueste;
 
@@ -30,6 +31,7 @@ class CafeLoteDto {
     this.pais,
     this.productor,
     this.proceso,
+    this.procesoDescripcion,
     this.variedad,
     this.tueste,
   });
@@ -49,6 +51,7 @@ class CafeLoteDto {
       pais: json['pais'] as String?,
       productor: json['productor'] as String?,
       proceso: json['proceso'] as String?,
+      procesoDescripcion: json['procesoDescripcion'] as String?,
       variedad: json['variedad'] as String?,
       tueste: json['tueste'] as String?,
     );

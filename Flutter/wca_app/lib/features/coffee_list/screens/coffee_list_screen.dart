@@ -405,7 +405,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
 
             // Método de proceso (badge de color)
             if (coffee.proceso != null) ...[  
-              _buildProcessBadge(theme, coffee.proceso!),
+              _buildProcessBadge(theme, coffee.proceso!, coffee.procesoDescripcion),
               const SizedBox(height: 20),
             ],
 
@@ -475,8 +475,8 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
   /// Muestra el método de proceso como un chip de color con icono y
   /// una descripción breve de qué significa ese proceso desde la BD.
  
-  Widget _buildProcessBadge(ThemeData theme, String proceso) {
-    // Datos visuales por método: color de fondo, icono y descripción corta
+  Widget _buildProcessBadge(ThemeData theme, String proceso, String? descripcion) {
+    // Solo color e icono vienen de Flutter; la descripción viene de la BD
     final data = _processData(proceso.toLowerCase());
 
     return Column(
@@ -521,9 +521,10 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    // Descripción breve
+                    // Descripción de la BD; si el proceso es desconocido (default),
+                    // se usa la descripción genérica hardcodeada como fallback.
                     Text(
-                      data.description,
+                      descripcion ?? data.description ?? '',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                         height: 1.4,
@@ -539,33 +540,30 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
     );
   }
 
-  /// Devuelve los datos visuales (color, icono, descripción) para cada proceso.
-  /// TOD0: obtener descripcion desde la BD en vez de hardcodearla aquí.
+  /// Devuelve los datos visuales (color e icono) para cada proceso.
+  /// La descripción viene de la BD para los procesos conocidos.
+  /// Solo el caso default tiene descripción hardcodeada como fallback.
   _ProcessData _processData(String proceso) {
     switch (proceso.toLowerCase().trim()) {
       case 'lavado':
         return const _ProcessData(
           color: Color(0xFF1976D2),
           icon: Icons.water_drop_outlined,
-          description: 'Proceso donde la pulpa se elimina antes del secado, produciendo cafés limpios y con acidez brillante.',
         );
       case 'natural':
         return const _ProcessData(
           color: Color(0xFFE65100),
           icon: Icons.wb_sunny_outlined,
-          description: 'Proceso donde el café se seca con la pulpa intacta, generando perfiles más dulces y afrutados.',
         );
       case 'honey':
         return const _ProcessData(
           color: Color(0xFFF59700),
           icon: Icons.opacity,
-          description: 'Proceso intermedio donde parte del mucílago se mantiene durante el secado, aportando dulzor y cuerpo.',
         );
       case 'anaeróbico':
         return const _ProcessData(
           color: Color(0xFF7B1FA2),
           icon: Icons.science_outlined,
-          description: 'Proceso de fermentación en ausencia de oxígeno que permite perfiles complejos, intensos y únicos.',
         );
       default:
         return const _ProcessData(
@@ -719,14 +717,13 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
 }
 
 /// Datos visuales para el badge del método de proceso.
-/// Clase auxiliar privada (solo se usa en este archivo).
 class _ProcessData {
   final Color color;
   final IconData icon;
-  final String description;
+  final String? description;
   const _ProcessData({
     required this.color,
     required this.icon,
-    required this.description,
+    this.description,
   });
 }
