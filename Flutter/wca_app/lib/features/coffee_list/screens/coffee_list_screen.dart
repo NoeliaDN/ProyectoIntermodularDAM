@@ -400,6 +400,12 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
             // Nivel de tueste (barra visual)
             if (coffee.tueste != null) ...[  
               _buildRoastIndicator(theme, coffee.tueste!),
+              const SizedBox(height: 16),
+            ],
+
+            // Método de proceso (badge de color)
+            if (coffee.proceso != null) ...[  
+              _buildProcessBadge(theme, coffee.proceso!),
               const SizedBox(height: 20),
             ],
 
@@ -463,6 +469,111 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
         ),
       ),
     );
+  }
+
+  // ── Widget: Badge de proceso ─────────────────────────────────────
+  /// Muestra el método de proceso como un chip de color con icono y
+  /// una descripción breve de qué significa ese proceso desde la BD.
+ 
+  Widget _buildProcessBadge(ThemeData theme, String proceso) {
+    // Datos visuales por método: color de fondo, icono y descripción corta
+    final data = _processData(proceso.toLowerCase());
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Método de Proceso',
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: data.color.withAlpha(30),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: data.color.withAlpha(100)),
+          ),
+          child: Row(
+            children: [
+              // Icono del proceso con fondo circular de color
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: data.color.withAlpha(50),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(data.icon, size: 22, color: data.color),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Nombre del proceso
+                    Text(
+                      proceso,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: data.color,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    // Descripción breve
+                    Text(
+                      data.description,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Devuelve los datos visuales (color, icono, descripción) para cada proceso.
+/// TOD0: obtener descripcion desde la BD en vez de hardcodearla aquí.
+  _ProcessData _processData(String proceso) {
+    switch (proceso.toLowerCase().trim()) {
+      case 'lavado':
+        return const _ProcessData(
+          color: Color(0xFF1976D2),
+          icon: Icons.water_drop_outlined,
+          description: 'Proceso donde la pulpa se elimina antes del secado, produciendo cafés limpios y con acidez brillante.',
+        );
+      case 'natural':
+        return const _ProcessData(
+          color: Color(0xFFE65100),
+          icon: Icons.wb_sunny_outlined,
+          description: 'Proceso donde el café se seca con la pulpa intacta, generando perfiles más dulces y afrutados.',
+        );
+      case 'honey':
+        return const _ProcessData(
+          color: Color(0xFFF59700),
+          icon: Icons.opacity,
+          description: 'Proceso intermedio donde parte del mucílago se mantiene durante el secado, aportando dulzor y cuerpo.',
+        );
+      case 'anaeróbico':
+        return const _ProcessData(
+          color: Color(0xFF7B1FA2),
+          icon: Icons.science_outlined,
+          description: 'Proceso de fermentación en ausencia de oxígeno que permite perfiles complejos, intensos y únicos.',
+        );
+      default:
+        return const _ProcessData(
+          color: Color(0xFF546E7A),
+          icon: Icons.settings_outlined,
+          description: 'Método de procesado del grano.',
+        );
+    }
   }
 
   // ── Widget: Indicador de tueste (LinearGradient)────────────────────────────────
@@ -607,4 +718,17 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
       ),
     );
   }
+}
+
+/// Datos visuales para el badge del método de proceso.
+/// Clase auxiliar privada (solo se usa en este archivo).
+class _ProcessData {
+  final Color color;
+  final IconData icon;
+  final String description;
+  const _ProcessData({
+    required this.color,
+    required this.icon,
+    required this.description,
+  });
 }
