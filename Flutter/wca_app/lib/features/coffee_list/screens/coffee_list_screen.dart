@@ -397,6 +397,12 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
             const Divider(),
             const SizedBox(height: 16),
 
+            // Nivel de tueste (barra visual)
+            if (coffee.tueste != null) ...[  
+              _buildRoastIndicator(theme, coffee.tueste!),
+              const SizedBox(height: 20),
+            ],
+
             // Descripción extendida 
             if (coffee.descripcionExtendida != null &&
                 coffee.descripcionExtendida!.isNotEmpty) ...[
@@ -459,6 +465,122 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
     );
   }
 
+  // ── Widget: Indicador de tueste (LinearGradient)────────────────────────────────
+  
+  /// Usa LayoutBuilder para calcular la posición absoluta del marcador
+  /// sobre el ancho real disponible en pantalla.
+  Widget _buildRoastIndicator(ThemeData theme, String tueste) {
+    //  nombre → posición en la barra (de 0 a 1):
+    const levels = {
+      'claro': 0.10,
+      'medio claro': 0.35,
+      'medio': 0.50,
+      'medio oscuro': 0.75,
+      'oscuro': 0.98,
+    };
+    final position = levels[tueste.toLowerCase()] ?? 0.55;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Título + nombre del tueste en la misma línea:
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Nivel de Tueste',
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Text(
+              tueste,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        // Barra + marcador:
+        LayoutBuilder( // para calcular sobre el ancho total de la pantalla
+          builder: (context, constraints) {
+            const markerSize = 20.0;
+            const barHeight = 12.0;
+            // Calculamos la izquierda del marcador para que su centro quede
+            // en la posición correcta, sin salirse del borde:
+            final markerLeft = (constraints.maxWidth * position - markerSize / 2)
+                .clamp(0.0, constraints.maxWidth - markerSize);
+
+            return Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                // Barra de gradiente: de tostado claro a muy oscuro (por si lo meto más adelante, aunque en cafés de especialidad no suelen tener ese tueste)
+                Container(
+                  height: barHeight,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(barHeight / 2),
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFFD4A96A), 
+                        Color(0xFF8B5A2B), 
+                        Color(0xFF3B1A08), 
+                      ],
+                    ),
+                  ),
+                ),
+                // Marcador blanco con borde:
+                Positioned(
+                  left: markerLeft,
+                  child: Container(
+                    width: markerSize,
+                    height: markerSize,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                      border: Border.all(
+                        color: theme.colorScheme.primary,
+                        width: 2.5,
+                      ),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 4,
+                          offset: Offset(0, 1),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+        const SizedBox(height: 6),
+        // Etiquetas extremos de la barra:
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Claro',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            Text(
+              'Oscuro',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
   // ── Widget: Sección SCA ──────────────────────────────────────────
   /// Card que envuelve el gráfico radial SCA (ScaRadarChart).
   Widget _buildScaSection(ThemeData theme) {
@@ -469,7 +591,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
         side: BorderSide(color: theme.colorScheme.outlineVariant),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 24, 24, 40),// dejo espacio bajo el gráfico
+        padding: const EdgeInsets.fromLTRB(24, 24, 24, 46),// dejo espacio bajo el gráfico
         child: Column(
           children: [
             Text(
