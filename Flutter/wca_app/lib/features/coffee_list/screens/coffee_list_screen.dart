@@ -540,7 +540,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
   }
 
   /// Devuelve los datos visuales (color, icono, descripción) para cada proceso.
-/// TOD0: obtener descripcion desde la BD en vez de hardcodearla aquí.
+  /// TOD0: obtener descripcion desde la BD en vez de hardcodearla aquí.
   _ProcessData _processData(String proceso) {
     switch (proceso.toLowerCase().trim()) {
       case 'lavado':
@@ -578,8 +578,6 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
 
   // ── Widget: Indicador de tueste (LinearGradient)────────────────────────────────
   
-  /// Usa LayoutBuilder para calcular la posición absoluta del marcador
-  /// sobre el ancho real disponible en pantalla.
   Widget _buildRoastIndicator(ThemeData theme, String tueste) {
     //  nombre → posición en la barra (de 0 a 1):
     const levels = {

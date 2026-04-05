@@ -53,7 +53,8 @@ namespace WCA.Infrastructure.Services
                 Region = lote.Region.Nombre,
                 Pais = lote.Region.Pais.Nombre,
                 Productor = lote.Productor.Nombre,
-                Proceso = lote.Proceso.Nombre,   // ajusta al nombre real
+                Proceso = lote.Proceso.Nombre,
+                ProcesoDescripcion = lote.Proceso.Descripcion,
                 Variedad = lote.Variedad.Nombre,
                 Tueste = lote.Tueste.Nombre
             };
