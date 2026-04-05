@@ -11,9 +11,9 @@ class AppConstants {
   static const String appName = 'World Coffee Atlas';
 
   // ── URLs de la API REST (ASP.NET Core) ─────────────────────────
-  // TOD0: Actualizar con la URL real de la API local: 
-  
-  //Ej.: static const String apiBaseUrl = 'https://localhost:7001/api';
+  // Para emulador Android, usa 10.0.2.2 en vez de localhost.
+  // Para dispositivo físico, usa la IP de tu PC (ej: 192.168.1.X).
+  static const String apiBaseUrl = 'https://localhost:7082/api'; // para web local
 
   // ── URLs del dashboard de Power BI ─────────────────────────────
   // Dashboard de escritorio (layout horizontal, para web y desktop):

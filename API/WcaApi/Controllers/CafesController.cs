@@ -43,7 +43,7 @@ namespace WCA.Api.Controllers
         /// <param name="ct">Token de cancelación.</param>
         /// <returns>Datos del café.</returns>
         /// <response code="200">Devuelve los datos del café.</response>
-        [HttpGet("/info/{id:int}")] // GET api/cafes/info/{id}
+        [HttpGet("info/{id:int}")] // GET api/cafes/info/{id}
         [ProducesResponseType(typeof(CafeLoteDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetCafeInfo(int id, CancellationToken ct)

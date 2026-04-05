@@ -193,7 +193,7 @@ namespace WCA.Api.Controllers
         /// <returns>
         /// 200 OK con un <see cref="VariedadConCafesDto"/> o 404 si la variedad no existe.
         /// </returns>
-        [HttpGet("/detalles/{id:int}")]
+        [HttpGet("detalles/{id:int}")]
         [ProducesResponseType(typeof(VariedadConCafesDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetDetalles(int id, CancellationToken ct)
