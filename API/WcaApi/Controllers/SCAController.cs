@@ -25,7 +25,7 @@ namespace WCA.Api.Controllers
         /// <param name="ct">Token de cancelación.</param>
         /// <returns>Perfil SCA del café.</returns>
         /// <response code="200">Devuelve el perfil SCA del café.</response>
-        [HttpGet("/perfilLote/{id:int}")]
+        [HttpGet("perfilLote/{id:int}")]
         [ProducesResponseType(typeof(SCADto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetCafeSca(int id, CancellationToken ct)

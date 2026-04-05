@@ -47,13 +47,15 @@ namespace WCA.Infrastructure.Services
                 NotasCata = lote.NotasCata,
                 AltitudMin = lote.AltitudMin,
                 AltitudMax = lote.AltitudMax,
-                RegionId = lote.RegionId,
-                ProductorId = lote.ProductorId,
-                ProcesoId = lote.ProcesoId,
-                VariedadId = lote.VariedadId,
-                TuesteId = lote.TuesteId,
                 AltitudMedia = lote.AltitudMedia,
-                DescripcionExtendida = lote.DescripcionExtendida
+                DescripcionExtendida = lote.DescripcionExtendida,
+
+                Region = lote.Region.Nombre,
+                Pais = lote.Region.Pais.Nombre,
+                Productor = lote.Productor.Nombre,
+                Proceso = lote.Proceso.Nombre,   // ajusta al nombre real
+                Variedad = lote.Variedad.Nombre,
+                Tueste = lote.Tueste.Nombre
             };
         }
 

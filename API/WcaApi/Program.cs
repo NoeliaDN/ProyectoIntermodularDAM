@@ -34,6 +34,20 @@ namespace WcaApi
             builder.Services.AddScoped<ICafeLoteService, CafeLoteService>();
             builder.Services.AddScoped<IPerfilSCAService, PerfilSCAService>();
             builder.Services.AddScoped<ICafeDetallesService, CafeDetallesService>();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("FlutterDev", policy =>
+                {
+                    // Permite peticiones desde Flutter web en local a mis puertos:
+                    policy.WithOrigins(
+                     "http://localhost:8080",
+                      "http://localhost:5000",
+                       "http://localhost:4040"
+                  )
+                  .AllowAnyMethod()
+                 .AllowAnyHeader();
+                });
+            });
 
             var app = builder.Build();
 
@@ -48,6 +62,7 @@ namespace WcaApi
 
             app.UseAuthorization();
 
+            app.UseCors("FlutterDev");// para Flutter
 
             app.MapControllers();
 
