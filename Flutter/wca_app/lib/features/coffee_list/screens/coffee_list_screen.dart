@@ -229,6 +229,20 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
                       // ── 4. Gráfico radial SCA ──
                       if (_scaData != null) _buildScaSection(theme),
 
+                      // ── 5. Gráfico de altitud de cultivo ──
+                      if (_selectedCoffee != null &&
+                          (_selectedCoffee!.altitudMin != null ||
+                           _selectedCoffee!.altitudMax != null ||
+                           _selectedCoffee!.altitudMedia != null)) ...[  
+                        const SizedBox(height: 24),
+                        _buildAltitudeChart(
+                          theme,
+                          _selectedCoffee!.altitudMin,
+                          _selectedCoffee!.altitudMax,
+                          _selectedCoffee!.altitudMedia,
+                        ),
+                      ],
+
                       // Espacio inferior para que el scroll no corte
                       const SizedBox(height: 40),
                     ],
@@ -465,6 +479,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
                 ),
               ),
             ],
+
           ],
         ),
       ),
@@ -572,6 +587,129 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
           description: 'Método de procesado del grano.',
         );
     }
+  }
+
+  // ── Widget: Gráfico de altitud (silueta de montaña) ──────────────────────────
+
+  /// Visualiza la altitud mínima, máxima y media del café como una silueta
+  /// de montaña: el pico es la altitud máxima, la base es la mínima, y una
+  /// línea discontinua horizontal indica la altitud media de cultivo.
+  Widget _buildAltitudeChart(
+    ThemeData theme,
+    double? altMin,
+    double? altMax,
+    double? altMedia,
+  ) {
+    final min = altMin ?? altMedia ?? 0;
+    final max = altMax ?? altMedia ?? 3000;
+    final media = altMedia;
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: theme.colorScheme.outlineVariant),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
+        child: Column(
+          children: [
+            Text(
+              'Altitud media del Cultivo',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 400),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final w = constraints.maxWidth;
+                    const double topPad = 24.0;
+                    const double bottomPad = 20.0;
+                    const double chartH = 100.0;
+                    const double totalH = chartH + topPad + bottomPad;
+                    final xCenter = w / 2;
+
+                    // Posición Y de la línea de altitud media dentro del stack
+                    double? yMedia;
+                    if (media != null && max > min) {
+                      final ratio = (media - min) / (max - min);
+                      yMedia = topPad + chartH - ratio * chartH;
+                    }
+
+                    return SizedBox(
+                      height: totalH,
+                      child: Stack(
+                        children: [
+                          // Silueta de montaña + línea discontinua de media
+                          Positioned.fill(
+                            child: CustomPaint(
+                              painter: _AltitudePainter(
+                                min: min,
+                                max: max,
+                                media: media,
+                                color: theme.colorScheme.primary,
+                                surfaceVariant: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                          // Etiqueta altitud máxima (pico — arriba al centro)
+                          Positioned(
+                            top: 0,
+                            left: xCenter - 50,
+                            width: 100,
+                            child: Text(
+                              '${max.toStringAsFixed(0)} m',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: theme.colorScheme.primary,
+                              ),
+                            ),
+                          ),
+                          // Etiqueta altitud mínima (base — abajo al centro)
+                          Positioned(
+                            bottom: 0,
+                            left: xCenter - 50,
+                            width: 100,
+                            child: Text(
+                              '${min.toStringAsFixed(0)} m',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                          // Etiqueta altitud media (derecha de la línea discontinua)
+                          if (yMedia != null)
+                            Positioned(
+                              top: yMedia - 9,
+                              right: 0,
+                              child: Text(
+                                '∼${media!.toStringAsFixed(0)} m',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                  color: theme.colorScheme.primary,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   // ── Widget: Indicador de tueste (LinearGradient)────────────────────────────────
@@ -714,6 +852,105 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
       ),
     );
   }
+}
+
+/// Painter que dibuja la silueta de montaña para el gráfico de altitud de cultivo.
+/// El pico representa la altitud máxima, la base la mínima, y una línea discontinua
+/// horizontal indica la altitud media proporcional dentro del rango.
+class _AltitudePainter extends CustomPainter {
+  final double min;
+  final double max;
+  final double? media;
+  final Color color;
+  final Color surfaceVariant;
+
+  const _AltitudePainter({
+    required this.min,
+    required this.max,
+    this.media,
+    required this.color,
+    required this.surfaceVariant,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const double topPad = 24.0;
+    const double bottomPad = 20.0;
+    final double chartH = size.height - topPad - bottomPad;
+    final double yBase = topPad + chartH;
+    final double yPeak = topPad;
+    final double xCenter = size.width / 2;
+
+    // Relleno de la montaña
+    final fillPaint = Paint()
+      ..color = color.withAlpha(30)
+      ..style = PaintingStyle.fill;
+
+    // Contorno de la montaña
+    final strokePaint = Paint()
+      ..color = color.withAlpha(160)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..strokeJoin = StrokeJoin.round;
+
+    final path = Path()
+      ..moveTo(0, yBase)
+      ..lineTo(xCenter, yPeak)
+      ..lineTo(size.width, yBase)
+      ..close();
+
+    canvas.drawPath(path, fillPaint);
+    canvas.drawPath(path, strokePaint);
+
+    // Línea de base
+    canvas.drawLine(
+      Offset(0, yBase),
+      Offset(size.width, yBase),
+      Paint()
+        ..color = surfaceVariant.withAlpha(100)
+        ..strokeWidth = 1.5,
+    );
+
+    // Punto en el pico
+    canvas.drawCircle(Offset(xCenter, yPeak), 4, Paint()..color = color);
+
+    // Línea discontinua en la posición de la altitud media
+    if (media != null && max > min) {
+      final ratio = (media! - min) / (max - min);
+      final yMedia = yBase - ratio * chartH;
+
+      // Calculamos el ancho de la montaña a esa altura
+      final t = (yBase - yMedia) / (yBase - yPeak);
+      final xLeft = xCenter * t;
+      final xRight = size.width - xCenter * t;
+
+      const dashW = 6.0;
+      const dashGap = 4.0;
+      final dashPaint = Paint()
+        ..color = color.withAlpha(200)
+        ..strokeWidth = 1.5;
+
+      double x = xLeft;
+      while (x < xRight) {
+        canvas.drawLine(
+          Offset(x, yMedia),
+          Offset((x + dashW).clamp(0.0, xRight), yMedia),
+          dashPaint,
+        );
+        x += dashW + dashGap;
+      }
+
+      // Pequeño círculo marcador en el extremo izquierdo de la línea
+      canvas.drawCircle(Offset(xLeft, yMedia), 3, Paint()..color = color);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_AltitudePainter old) =>
+      old.min != min ||
+      old.max != max ||
+      old.media != media ||
+      old.color != color;
 }
 
 /// Datos visuales para el badge del método de proceso.
