@@ -2,13 +2,11 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../models/sca_dto.dart';
 
-/// Widget que muestra el perfil sensorial SCA en un gráfico radar (araña).
-///
-/// Recibe un [ScaDto] y representa 6 ejes:
-/// Acidez, Cuerpo, Dulzor, Aroma, Retrogusto, Balance.
+/// Widget que muestra el perfil sensorial SCA en un gráfico radar.
+
 /// Arriba del gráfico se muestra la puntuación SCA media.
-///
-/// Usa el paquete fl_chart → RadarChart.
+
+/// Paquete fl_chart → RadarChart.
 class ScaRadarChart extends StatelessWidget {
   final ScaDto sca;
 
@@ -17,9 +15,7 @@ class ScaRadarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    // Lista de atributos para los 6 ejes del radar.
-    // Cada uno tiene nombre (para la etiqueta) y valor (para el punto).
+    
     final attributes = [
       _ScaAttribute('Acidez', sca.acidez),
       _ScaAttribute('Cuerpo', sca.cuerpo),

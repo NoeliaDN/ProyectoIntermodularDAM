@@ -7,13 +7,15 @@ class CafeLoteDto {
   final String? notasCata;
   final double? altitudMin;
   final double? altitudMax;
-  final int? regionId;
-  final int? productorId;
-  final int? procesoId;
-  final int? variedadId;
-  final int? tuesteId;
   final double? altitudMedia;
   final String? descripcionExtendida;
+  // Campos resueltos desde las relaciones de la BD:
+  final String? region;
+  final String? pais;
+  final String? productor;
+  final String? proceso;
+  final String? variedad;
+  final String? tueste;
 
   CafeLoteDto({
     required this.id,
@@ -22,16 +24,17 @@ class CafeLoteDto {
     this.notasCata,
     this.altitudMin,
     this.altitudMax,
-    this.regionId,
-    this.productorId,
-    this.procesoId,
-    this.variedadId,
-    this.tuesteId,
     this.altitudMedia,
     this.descripcionExtendida,
+    this.region,
+    this.pais,
+    this.productor,
+    this.proceso,
+    this.variedad,
+    this.tueste,
   });
 
-  //Aseguramos las conversiones a decimales:
+  // Aseguramos las conversiones a decimales:
   factory CafeLoteDto.fromJson(Map<String, dynamic> json) {
     return CafeLoteDto(
       id: json['id'] as int,
@@ -40,13 +43,14 @@ class CafeLoteDto {
       notasCata: json['notasCata'] as String?,
       altitudMin: (json['altitudMin'] as num?)?.toDouble(),
       altitudMax: (json['altitudMax'] as num?)?.toDouble(),
-      regionId: json['regionId'] as int?,
-      productorId: json['productorId'] as int?,
-      procesoId: json['procesoId'] as int?,
-      variedadId: json['variedadId'] as int?,
-      tuesteId: json['tuesteId'] as int?,
       altitudMedia: (json['altitudMedia'] as num?)?.toDouble(),
       descripcionExtendida: json['descripcionExtendida'] as String?,
+      region: json['region'] as String?,
+      pais: json['pais'] as String?,
+      productor: json['productor'] as String?,
+      proceso: json['proceso'] as String?,
+      variedad: json['variedad'] as String?,
+      tueste: json['tueste'] as String?,
     );
   }
 }

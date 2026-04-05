@@ -113,6 +113,44 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
     });
   }
 
+  // ── Helper: bandera del país ─────────────────────────────────────
+  /// Convierte el nombre del país en español al emoji de su bandera.
+  /// Los emojis de bandera son caracteres Unicode especiales (indicadores
+  /// regionales). Si el país no está mapeado, devuelve un globo genérico.
+  String _countryFlag(String pais) {
+    const flags = {
+      'etiopía': '🇪🇹', 'etiopia': '🇪🇹',
+      'colombia': '🇨🇴',
+      'brasil': '🇧🇷',
+      'guatemala': '🇬🇹',
+      'costa rica': '🇨🇷',
+      'honduras': '🇭🇳',
+      'perú': '🇵🇪', 'peru': '🇵🇪',
+      'panamá': '🇵🇦', 'panama': '🇵🇦',
+      'jamaica': '🇯🇲',
+      'méxico': '🇲🇽', 'mexico': '🇲🇽',
+      'nicaragua': '🇳🇮',
+      'el salvador': '🇸🇻',
+      'kenia': '🇰🇪', 'kenya': '🇰🇪',
+      'yemen': '🇾🇪',
+      'indonesia': '🇮🇩',
+      'vietnam': '🇻🇳',
+      'india': '🇮🇳',
+      'bolivia': '🇧🇴',
+      'ecuador': '🇪🇨',
+      'república dominicana': '🇩🇴',
+      'cuba': '🇨🇺',
+      'ruanda': '🇷🇼', 'rwanda': '🇷🇼',
+      'uganda': '🇺🇬',
+      'tanzania': '🇹🇿',
+      'papúa nueva guinea': '🇵🇬',
+      'china': '🇨🇳',
+      'tailandia': '🇹🇭',
+      'myanmar': '🇲🇲',
+    };
+    return flags[pais.toLowerCase()] ?? '🌍';
+  }
+
   // ── UI ───────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
@@ -278,31 +316,64 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Nombre del café (título) 
-            Text(
-              coffee.nombre,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.primary,
-              ),
+            //Nombre del café (título) + bandera emoji
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (coffee.pais != null) ...
+                  [
+                    Text(
+                      _countryFlag(coffee.pais!),
+                      style: const TextStyle(fontSize: 28),
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                Expanded(
+                  child: Text(
+                    coffee.nombre,
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
 
-            // Ubicación (región)
-            if (coffee.regionId != null)
+            // Región
+            if (coffee.region != null)
               Row(
                 children: [
                   Icon(Icons.location_on_outlined,
                       size: 18, color: theme.colorScheme.onSurfaceVariant),
                   const SizedBox(width: 4),
                   Text(
-                    'Región #${coffee.regionId}',
+                    coffee.region!,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
               ),
+
+            // // País (nombre completo, debajo de la región)
+            // if (coffee.pais != null) ...[  
+            //   const SizedBox(height: 4),
+            //   Row(
+            //     children: [
+            //       Icon(Icons.public_outlined,
+            //           size: 18, color: theme.colorScheme.onSurfaceVariant),
+            //       const SizedBox(width: 4),
+            //       Text(
+            //         coffee.pais!,
+            //         style: theme.textTheme.bodyMedium?.copyWith(
+            //           color: theme.colorScheme.onSurfaceVariant,
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ],
 
             //  Altitud 
             if (coffee.altitudMedia != null) ...[

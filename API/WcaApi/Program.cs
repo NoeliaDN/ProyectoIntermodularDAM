@@ -34,20 +34,32 @@ namespace WcaApi
             builder.Services.AddScoped<ICafeLoteService, CafeLoteService>();
             builder.Services.AddScoped<IPerfilSCAService, PerfilSCAService>();
             builder.Services.AddScoped<ICafeDetallesService, CafeDetallesService>();
+            //builder.Services.AddCors(options =>
+            //{
+            //    options.AddPolicy("FlutterDev", policy =>
+            //    {
+            //        // Permite peticiones desde Flutter web en local a mis puertos:
+            //        policy.WithOrigins(
+            //         "http://localhost:8080",
+            //          "http://localhost:5000",
+            //           "http://localhost:4040"
+            //      )
+            //      .AllowAnyMethod()
+            //     .AllowAnyHeader();
+            //    });
+            //});
+            // Para desarrollo p
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("FlutterDev", policy =>
                 {
-                    // Permite peticiones desde Flutter web en local a mis puertos:
-                    policy.WithOrigins(
-                     "http://localhost:8080",
-                      "http://localhost:5000",
-                       "http://localhost:4040"
-                  )
-                  .AllowAnyMethod()
-                 .AllowAnyHeader();
+                    policy
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
                 });
             });
+
 
             var app = builder.Build();
 
