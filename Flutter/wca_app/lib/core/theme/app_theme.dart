@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// Tema visual de World Coffee Atlas (Usando Material 3 (useMaterial3: true)).
 
@@ -25,6 +26,16 @@ class AppTheme {
     // ── Tipografía ─────────────────────────────────────────────────
     // De momento usamos la fuente por defecto de Material 3 (Roboto en Android,
     // San Francisco en iOS). Ya miraré Google Fonts más tarde con textTheme.
+
+    // ── AppBar ─────────────────────────────────────────────────────
+    appBarTheme: AppBarTheme(
+      centerTitle: true,
+      titleTextStyle: GoogleFonts.lora(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: onSurface,
+      ),
+    ),
 
     // ── NavigationBar (barra inferior) ─────────────────────────────
     navigationBarTheme: NavigationBarThemeData(// TOD0: revisar diseño si hay tiempo
