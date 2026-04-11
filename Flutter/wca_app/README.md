@@ -4,6 +4,6 @@
 
 - Instalados **paquetes**:
     - **Librería _fl_chart_** : para gráficos Flutter:
-        -   _RadarChart_: gráfico radial para el perfil sensorial de cada café
+        - _RadarChart_: gráfico radial para el perfil sensorial de cada café
         - _BarChart_: gráfico de barras para altitud media de ls diferentes cafés del mundo
     - **_http_**: para peticiones HTTP a mi API REST en C#
