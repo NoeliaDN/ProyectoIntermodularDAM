@@ -61,8 +61,8 @@ class _MainScaffoldState extends State<MainScaffold> {
             label: 'Cafés',
           ),
           NavigationDestination(
-            icon: Icon(Icons.grain_outlined),
-            selectedIcon: Icon(Icons.grain),
+            icon: Icon(Icons.eco_outlined),
+            selectedIcon: Icon(Icons.eco),
             label: 'Variedades',
           ),
         ],

@@ -20,7 +20,7 @@ class CoffeeDetailScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.grain,
+              Icons.eco,
               size: 80,
               color: theme.colorScheme.primary,
             ),

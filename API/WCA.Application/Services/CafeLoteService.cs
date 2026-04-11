@@ -1,12 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using WCA.Application.DTOs;
-using WCA.Application.Interfaces;
-using WCA.Domain.Entities;
+﻿using WCA.Application.DTOs;
 using WCA.Domain.Repositories;
-using WCA.Infrastructure.Data;
-using WCA.Infrastructure.Repositories;
 
-namespace WCA.Infrastructure.Services
+
+namespace WCA.Application.Services
 {
     public class CafeLoteService : ICafeLoteService
     {
@@ -33,6 +29,25 @@ namespace WCA.Infrastructure.Services
                 .ToList();
         }
 
+        // Nombres de cafés, altitudes y codigo ISO para gráfico:
+        public async Task<IReadOnlyList<CafeAltitudesDto>> GetAllCoffeeAltitudesAsync(CancellationToken ct = default)
+        {
+            var lotes = await _cafeLoteRepository.GetAllCoffeesAsync(ct);
+
+            return lotes
+                .Select(l => new CafeAltitudesDto
+                {
+                    CafeId = l.Id,
+                    CafeNombre = l.Nombre,
+                    AltitudMin = l.AltitudMin,
+                    AltitudMax = l.AltitudMax,
+                    AltitudMedia = l.AltitudMedia,
+                    PaisISO = l.Region.Pais.CodigoISO
+
+                })
+                .ToList();
+        }
+
         // Datos del café sin SCA:
         public async Task<CafeLoteDto?> GetCoffeeInfoByIdAsync(int id, CancellationToken ct = default)
         {
@@ -53,7 +68,8 @@ namespace WCA.Infrastructure.Services
                 Region = lote.Region.Nombre,
                 Pais = lote.Region.Pais.Nombre,
                 Productor = lote.Productor.Nombre,
-                Proceso = lote.Proceso.Nombre,   // ajusta al nombre real
+                Proceso = lote.Proceso.Nombre,
+                ProcesoDescripcion = lote.Proceso.Descripcion,
                 Variedad = lote.Variedad.Nombre,
                 Tueste = lote.Tueste.Nombre
             };

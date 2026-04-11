@@ -14,6 +14,8 @@
         public string? Region { get; set; }
         public string? Productor { get; set; }
         public string? Proceso { get; set; }
+
+        public string? ProcesoDescripcion { get; set; }
         public string? Variedad { get; set; }
         public string? Tueste { get; set; }
 

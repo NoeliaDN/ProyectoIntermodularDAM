@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WCA.Application.DTOs;
-using WCA.Application.Interfaces;
+using WCA.Application.Services;
 
 namespace WCA.Api.Controllers
 {
@@ -73,6 +73,16 @@ namespace WCA.Api.Controllers
             var result = await _cafeLoteService.GetCoffeeDetailAsync(id, ct);
             if (result is null) return NotFound();
 
+            return Ok(result);
+        }
+
+
+        //Endpoint para altitudes:
+        [HttpGet("altitud")]
+        [ProducesResponseType(typeof(IReadOnlyList<CafeAltitudesDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAltitudes(CancellationToken ct)
+        {
+            var result = await _cafeLoteService.GetAllCoffeeAltitudesAsync(ct);
             return Ok(result);
         }
 

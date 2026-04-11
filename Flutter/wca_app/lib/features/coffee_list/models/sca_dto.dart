@@ -1,4 +1,5 @@
 /// DTO con el perfil sensorial SCA de un café para el gráfico radial.
+library;
 
 class ScaDto {
   final double acidez;

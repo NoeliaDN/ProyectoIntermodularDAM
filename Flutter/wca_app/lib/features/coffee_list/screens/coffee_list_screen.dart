@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import '../models/cafe_nombre_dto.dart';
 import '../models/cafe_lote_dto.dart';
 import '../models/sca_dto.dart';
+import '../models/cafe_altitudes_dto.dart';
 import '../services/coffee_api_service.dart';
 import '../widgets/sca_radar_chart.dart';
+import '../widgets/altitude_bar_chart.dart';
 
 /// Pantalla de cafés de especialidad.
 ///
@@ -28,6 +30,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
 
   // ── Estado ───────────────────────────────────────────────────────
   List<CafeNombreDto> _coffeeNames = []; // Lista para el selector
+  List<CafeAltitudesDto> _altitudesData = []; // Altitudes de todos los cafés para el gráfico
   CafeLoteDto? _selectedCoffee;           // Info del café seleccionado
   ScaDto? _scaData;                       // Perfil SCA del café seleccionado
   bool _loadingNames = true;              // ¿Estamos cargando la lista?
@@ -38,7 +41,9 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
   @override
   void initState() {
     super.initState();
-    _loadCoffeeNames(); // Cargar nombres al entrar en la pantalla
+       
+    //_loadCoffeeNames(); //cargar nombres al entrar en pantalla
+    _loadInitialData(); // Cargamos nombres y altitudes a la vez
   }
 
   @override
@@ -49,13 +54,17 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
 
   // ── Lógica de negocio ────────────────────────────────────────────
 
-  /// Carga la lista de nombres de cafés para seleccionar:.
-  Future<void> _loadCoffeeNames() async {
+  /// Carga la lista de nombres y las altitudes de todos los cafés.
+  Future<void> _loadInitialData() async {
     try {
-      final names = await _apiService.fetchCoffeeNames();
-      if (!mounted) return; // Comprobamos que el widget sigue vivo
+      final results = await Future.wait([
+        _apiService.fetchCoffeeNames(),
+        _apiService.fetchCoffeeAltitudes(),
+      ]);
+      if (!mounted) return;
       setState(() {
-        _coffeeNames = names;
+        _coffeeNames = results[0] as List<CafeNombreDto>;
+        _altitudesData = results[1] as List<CafeAltitudesDto>;
         _loadingNames = false;
       });
     } catch (e) {
@@ -66,6 +75,9 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
       });
     }
   }
+
+  // Mantenemos el nombre anterior por si queda alguna referencia interna:
+  Future<void> _loadCoffeeNames() => _loadInitialData();
 
   // Una vez seleccionado el café, llamamos a los endpoints para rellenar la info:
   Future<void> _onCoffeeSelected(int id) async {
@@ -111,6 +123,57 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
         );
       }
     });
+  }
+
+  // ── Helper: bandera del país ─────────────────────────────────────
+  /// Convierte el nombre del país en español al emoji de su bandera.
+  /// Devuelve el rango de altitud como "1200 – 1800 m.s.n.m.".
+  /// Si solo hay uno de los dos valores, muestra solo ese.
+  String _altitudRango(double? min, double? max) {
+    if (min != null && max != null) {
+      return '${min.toStringAsFixed(0)} – ${max.toStringAsFixed(0)} m.s.n.m.';
+    } else if (min != null) {
+      return '${min.toStringAsFixed(0)} m.s.n.m.';
+    } else if (max != null) {
+      return '${max.toStringAsFixed(0)} m.s.n.m.';
+    }
+    return '';
+  }
+
+  /// Los emojis de bandera son caracteres Unicode especiales (indicadores
+  /// regionales). Si el país no está mapeado, devuelve un globo genérico.
+  String _countryFlag(String pais) {
+    const flags = {
+      'etiopía': '🇪🇹', 'etiopia': '🇪🇹',
+      'colombia': '🇨🇴',
+      'brasil': '🇧🇷',
+      'guatemala': '🇬🇹',
+      'costa rica': '🇨🇷',
+      'honduras': '🇭🇳',
+      'perú': '🇵🇪', 'peru': '🇵🇪',
+      'panamá': '🇵🇦', 'panama': '🇵🇦',
+      'jamaica': '🇯🇲',
+      'méxico': '🇲🇽', 'mexico': '🇲🇽',
+      'nicaragua': '🇳🇮',
+      'el salvador': '🇸🇻',
+      'kenia': '🇰🇪', 'kenya': '🇰🇪',
+      'yemen': '🇾🇪',
+      'indonesia': '🇮🇩',
+      'vietnam': '🇻🇳',
+      'india': '🇮🇳',
+      'bolivia': '🇧🇴',
+      'ecuador': '🇪🇨',
+      'república dominicana': '🇩🇴',
+      'cuba': '🇨🇺',
+      'ruanda': '🇷🇼', 'rwanda': '🇷🇼',
+      'uganda': '🇺🇬',
+      'tanzania': '🇹🇿',
+      'papúa nueva guinea': '🇵🇬',
+      'china': '🇨🇳',
+      'tailandia': '🇹🇭',
+      'myanmar': '🇲🇲',
+    };
+    return flags[pais.toLowerCase()] ?? '🌍';
   }
 
   // ── UI ───────────────────────────────────────────────────────────
@@ -189,7 +252,15 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
                       ],
 
                       // ── 4. Gráfico radial SCA ──
-                      if (_scaData != null) _buildScaSection(theme),
+                      if (_scaData != null) ...[  
+                        _buildScaSection(theme),
+                        const SizedBox(height: 24),
+                      ],
+
+                      // ── 5. Gráfico comparativo de altitudes ──
+                      // Solo se muestra al seleccionar un café para no ocupar espacio antes
+                      if (_altitudesData.isNotEmpty && _selectedCoffee != null)
+                        _buildAltitudesSection(theme),
 
                       // Espacio inferior para que el scroll no corte
                       const SizedBox(height: 40),
@@ -278,53 +349,152 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Nombre del café (título) 
-            Text(
-              coffee.nombre,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.primary,
-              ),
+            //Nombre del café (título) + bandera emoji
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (coffee.pais != null) ...
+                  [
+                    Text(
+                      _countryFlag(coffee.pais!),
+                      style: const TextStyle(fontSize: 28),
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                Expanded(
+                  child: Text(
+                    coffee.nombre,
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
 
-            // Ubicación (región)
-            if (coffee.regionId != null)
-              Row(
-                children: [
-                  Icon(Icons.location_on_outlined,
-                      size: 18, color: theme.colorScheme.onSurfaceVariant),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Región #${coffee.regionId}',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
+            // Dos columnas: izquierda → región + altitud | derecha → variedad + productor
+            // ConstrainedBox limita el ancho a 380px para que las columnas siempre
+            // queden juntas aunque la pantalla sea muy grande.
+            Align(
+              alignment: Alignment.centerLeft,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 380),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ── Columna izquierda ──────────────────────────
+                    Expanded(
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (coffee.region != null)
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.location_on_outlined,
+                                size: 16, color: theme.colorScheme.onSurfaceVariant),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                coffee.region!,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      if (coffee.altitudMin != null || coffee.altitudMax != null) ...[
+                        const SizedBox(height: 4),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.terrain_outlined,
+                                size: 16, color: theme.colorScheme.onSurfaceVariant),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                _altitudRango(coffee.altitudMin, coffee.altitudMax),
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
+                ),
+                ),
 
-            //  Altitud 
-            if (coffee.altitudMedia != null) ...[
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Icon(Icons.terrain_outlined,
-                      size: 18, color: theme.colorScheme.onSurfaceVariant),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${coffee.altitudMedia!.toStringAsFixed(0)} m.s.n.m.',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
+                const SizedBox(width: 12),
+
+                // ── Columna derecha ────────────────────────────────
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (coffee.variedad != null)
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.eco_outlined,
+                                size: 16, color: theme.colorScheme.onSurfaceVariant),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                coffee.variedad!,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      if (coffee.productor != null) ...[
+                        const SizedBox(height: 4),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.person_outline_rounded,
+                                size: 16, color: theme.colorScheme.onSurfaceVariant),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                coffee.productor!,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
                   ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
+            ),
+            ),
 
             const SizedBox(height: 20),
             const Divider(),
             const SizedBox(height: 16),
+
+            // Nivel de tueste (barra visual)
+            if (coffee.tueste != null) ...[  
+              _buildRoastIndicator(theme, coffee.tueste!),
+              const SizedBox(height: 16),
+            ],
+
+            // Método de proceso (badge de color)
+            if (coffee.proceso != null) ...[  
+              _buildProcessBadge(theme, coffee.proceso!, coffee.procesoDescripcion),
+              const SizedBox(height: 20),
+            ],
 
             // Descripción extendida 
             if (coffee.descripcionExtendida != null &&
@@ -388,6 +558,261 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
     );
   }
 
+  // ── Widget: Badge de proceso ─────────────────────────────────────
+  /// Muestra el método de proceso como un chip de color con icono y
+  /// una descripción breve de qué significa ese proceso desde la BD.
+ 
+  Widget _buildProcessBadge(ThemeData theme, String proceso, String? descripcion) {
+    // Solo color e icono vienen de Flutter; la descripción viene de la BD
+    final data = _processData(proceso.toLowerCase());
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Método de Proceso',
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: data.color.withAlpha(30),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: data.color.withAlpha(100)),
+          ),
+          child: Row(
+            children: [
+              // Icono del proceso con fondo circular de color
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: data.color.withAlpha(50),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(data.icon, size: 22, color: data.color),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Nombre del proceso
+                    Text(
+                      proceso,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: data.color,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    // Descripción de la BD; si el proceso es desconocido (default),
+                    // se usa la descripción genérica hardcodeada como fallback.
+                    Text(
+                      descripcion ?? data.description ?? '',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Devuelve los datos visuales (color e icono) para cada proceso.
+  /// La descripción viene de la BD para los procesos conocidos.
+  /// Solo el caso default tiene descripción hardcodeada como fallback.
+  _ProcessData _processData(String proceso) {
+    switch (proceso.toLowerCase().trim()) {
+      case 'lavado':
+        return const _ProcessData(
+          color: Color(0xFF1976D2),
+          icon: Icons.water_drop_outlined,
+        );
+      case 'natural':
+        return const _ProcessData(
+          color: Color(0xFFE65100),
+          icon: Icons.wb_sunny_outlined,
+        );
+      case 'honey':
+        return const _ProcessData(
+          color: Color(0xFFF59700),
+          icon: Icons.opacity,
+        );
+      case 'anaeróbico':
+        return const _ProcessData(
+          color: Color(0xFF7B1FA2),
+          icon: Icons.science_outlined,
+        );
+      default:
+        return const _ProcessData(
+          color: Color(0xFF546E7A),
+          icon: Icons.settings_outlined,
+          description: 'Método de procesado del grano.',
+        );
+    }
+  }
+
+  // ── Widget: Indicador de tueste (LinearGradient)────────────────────────────────
+  
+  Widget _buildRoastIndicator(ThemeData theme, String tueste) {
+    //  nombre → posición en la barra (de 0 a 1):
+    const levels = {
+      'claro': 0.10,
+      'medio claro': 0.35,
+      'medio': 0.50,
+      'medio oscuro': 0.75,
+      'oscuro': 0.98,
+    };
+    final position = levels[tueste.toLowerCase()] ?? 0.55;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Título + nombre del tueste en la misma línea:
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Nivel de Tueste',
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Text(
+              tueste,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        // Barra + marcador:
+        LayoutBuilder( // para calcular sobre el ancho total de la pantalla
+          builder: (context, constraints) {
+            const markerSize = 20.0;
+            const barHeight = 12.0;
+            // Calculamos la izquierda del marcador para que su centro quede
+            // en la posición correcta, sin salirse del borde:
+            final markerLeft = (constraints.maxWidth * position - markerSize / 2)
+                .clamp(0.0, constraints.maxWidth - markerSize);
+
+            return Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                // Barra de gradiente: de tostado claro a muy oscuro (por si lo meto más adelante, aunque en cafés de especialidad no suelen tener ese tueste)
+                Container(
+                  height: barHeight,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(barHeight / 2),
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFFD4A96A), 
+                        Color(0xFF8B5A2B), 
+                        Color(0xFF3B1A08), 
+                      ],
+                    ),
+                  ),
+                ),
+                // Marcador blanco con borde:
+                Positioned(
+                  left: markerLeft,
+                  child: Container(
+                    width: markerSize,
+                    height: markerSize,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                      border: Border.all(
+                        color: theme.colorScheme.primary,
+                        width: 2.5,
+                      ),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 4,
+                          offset: Offset(0, 1),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+        const SizedBox(height: 6),
+        // Etiquetas extremos de la barra:
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Claro',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            Text(
+              'Oscuro',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // ── Widget: Sección altitudes comparativo ────────────────────────
+  /// Card con el gráfico de barras de altitudes de todos los cafés.
+  /// La barra del café seleccionado se resalta con el color primario.
+  Widget _buildAltitudesSection(ThemeData theme) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: theme.colorScheme.outlineVariant),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 24, 8, 16),
+        child: Column(
+          children: [
+            Text(
+              'Altitud Media del Cultivo',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Comparativa de todos los cafés · m.s.n.m.',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 16),
+            AltitudeBarChart(
+              altitudes: _altitudesData,
+              selectedId: _selectedCoffee?.id,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   // ── Widget: Sección SCA ──────────────────────────────────────────
   /// Card que envuelve el gráfico radial SCA (ScaRadarChart).
   Widget _buildScaSection(ThemeData theme) {
@@ -398,7 +823,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
         side: BorderSide(color: theme.colorScheme.outlineVariant),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 24, 24, 40),// dejo espacio bajo el gráfico
+        padding: const EdgeInsets.fromLTRB(24, 24, 24, 46),// dejo espacio bajo el gráfico
         child: Column(
           children: [
             Text(
@@ -414,4 +839,16 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
       ),
     );
   }
+}
+
+/// Datos visuales para el badge del método de proceso.
+class _ProcessData {
+  final Color color;
+  final IconData icon;
+  final String? description;
+  const _ProcessData({
+    required this.color,
+    required this.icon,
+    this.description,
+  });
 }

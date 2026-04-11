@@ -4,6 +4,7 @@ import '../../../core/constants/app_constants.dart';
 import '../models/cafe_nombre_dto.dart';
 import '../models/cafe_lote_dto.dart';
 import '../models/sca_dto.dart';
+import '../models/cafe_altitudes_dto.dart';
 
 /// Servicio que encapsula las llamadas HTTP a la API de cafés.
 ///
@@ -61,6 +62,20 @@ class CoffeeApiService {
       return null; // Sin perfil SCA — gestionamos en la UI
     } else {
       throw Exception('Error ${response.statusCode} al cargar perfil SCA');
+    }
+  }
+
+  // ── GET /api/cafes/altitud ───────────────────────────────────────
+  /// Obtiene la altitud (mín, máx, media) de todos los cafés para el gráfico comparativo.
+  Future<List<CafeAltitudesDto>> fetchCoffeeAltitudes() async {
+    final uri = Uri.parse('${AppConstants.apiBaseUrl}/cafes/altitud');
+    final response = await _client.get(uri);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonList = json.decode(response.body);
+      return jsonList.map((item) => CafeAltitudesDto.fromJson(item)).toList();
+    } else {
+      throw Exception('Error ${response.statusCode} al cargar altitudes');
     }
   }
 }

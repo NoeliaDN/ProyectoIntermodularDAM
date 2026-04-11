@@ -1,6 +1,6 @@
 ﻿using WCA.Application.DTOs;
 
-namespace WCA.Application.Interfaces;
+namespace WCA.Application.Services;
 public interface ICafeLoteService
 {
     Task<IReadOnlyList<CafeNombreDto>> GetAllCoffeeNamesAsync(CancellationToken ct = default);
@@ -8,5 +8,7 @@ public interface ICafeLoteService
     Task<CafeLoteDto?> GetCoffeeInfoByIdAsync(int id, CancellationToken ct = default);
 
     Task<CafeDetalleDto?> GetCoffeeDetailAsync(int id, CancellationToken ct = default);
+
+    Task<IReadOnlyList<CafeAltitudesDto>> GetAllCoffeeAltitudesAsync(CancellationToken ct = default);
 
 }

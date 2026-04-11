@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WCA.Application.DTOs;
-using WCA.Application.Interfaces;
+using WCA.Application.Services;
 
 namespace WCA.Api.Controllers
 {
