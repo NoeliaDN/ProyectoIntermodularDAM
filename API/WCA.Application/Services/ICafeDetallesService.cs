@@ -1,7 +1,7 @@
 ﻿using WCA.Application.DTOs;
 using WCA.Domain.Entities;
 
-namespace WCA.Application.Interfaces
+namespace WCA.Application.Services
 {
     public interface ICafeDetallesService
     {

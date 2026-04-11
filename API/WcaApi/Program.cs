@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WCA.Infrastructure.Data;
-using WCA.Application.Interfaces;
-using WCA.Infrastructure.Services;
+using WCA.Application.Services;
 using WCA.Domain.Repositories;
 using WCA.Infrastructure.Repositories;
 

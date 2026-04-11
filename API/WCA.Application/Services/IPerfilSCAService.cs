@@ -1,6 +1,6 @@
 ﻿using WCA.Application.DTOs;
 
-namespace WCA.Application.Interfaces
+namespace WCA.Application.Services
 {
     public interface IPerfilSCAService
     {

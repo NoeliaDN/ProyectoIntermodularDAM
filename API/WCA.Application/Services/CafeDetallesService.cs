@@ -1,9 +1,8 @@
 ﻿using WCA.Application.DTOs;
-using WCA.Application.Interfaces;
 using WCA.Domain.Entities;
 using WCA.Domain.Repositories;
 
-namespace WCA.Infrastructure.Services
+namespace WCA.Application.Services
 {
     public class CafeDetallesService : ICafeDetallesService
     {

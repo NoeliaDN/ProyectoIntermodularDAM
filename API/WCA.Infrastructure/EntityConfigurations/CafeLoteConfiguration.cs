@@ -18,6 +18,7 @@ namespace WCA.Infrastructure.EntityConfigurations
 
             // Columna calculada
             builder.Property(e => e.AltitudMedia)
+                .HasColumnType("decimal(10,2)")
                    .HasComputedColumnSql("([AltitudMin]+[AltitudMax])/(2.0)", stored: false);
         }
     }

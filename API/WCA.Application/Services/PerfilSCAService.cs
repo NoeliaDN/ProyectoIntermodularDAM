@@ -1,11 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using WCA.Application.DTOs;
-using WCA.Application.Interfaces;
+﻿using WCA.Application.DTOs;
 using WCA.Domain.Repositories;
-using WCA.Infrastructure.Data;
-using WCA.Infrastructure.Repositories;
 
-namespace WCA.Infrastructure.Services
+namespace WCA.Application.Services
 {
     public  class PerfilSCAService : IPerfilSCAService
     {

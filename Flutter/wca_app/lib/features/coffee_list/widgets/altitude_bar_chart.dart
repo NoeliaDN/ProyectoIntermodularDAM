@@ -50,7 +50,7 @@ class AltitudeBarChart extends StatelessWidget {
                 barTouchData: BarTouchData(
                   touchTooltipData: BarTouchTooltipData(
                     getTooltipColor: (_) => theme.colorScheme.primaryContainer,
-                    getTooltipItem: (group, _, rod, __) {
+                    getTooltipItem: (group, _, rod, _) {
                       final coffee = data[group.x];
                       return BarTooltipItem(
                         '${coffee.cafeNombre}\n${coffee.altitudMedia!.toStringAsFixed(0)} m',
