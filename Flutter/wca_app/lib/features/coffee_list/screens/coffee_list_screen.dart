@@ -258,7 +258,8 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
                       ],
 
                       // ── 5. Gráfico comparativo de altitudes ──
-                      if (_altitudesData.isNotEmpty)
+                      // Solo se muestra al seleccionar un café para no ocupar espacio antes
+                      if (_altitudesData.isNotEmpty && _selectedCoffee != null)
                         _buildAltitudesSection(theme),
 
                       // Espacio inferior para que el scroll no corte
@@ -374,12 +375,18 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
             const SizedBox(height: 12),
 
             // Dos columnas: izquierda → región + altitud | derecha → variedad + productor
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ── Columna izquierda ──────────────────────────────
-                Expanded(
-                  child: Column(
+            // ConstrainedBox limita el ancho a 380px para que las columnas siempre
+            // queden juntas aunque la pantalla sea muy grande.
+            Align(
+              alignment: Alignment.centerLeft,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 380),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ── Columna izquierda ──────────────────────────
+                    Expanded(
+                      child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (coffee.region != null)
@@ -419,7 +426,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
                         ),
                       ],
                     ],
-                  ),
+                ),
                 ),
 
                 const SizedBox(width: 12),
@@ -469,6 +476,8 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
                   ),
                 ),
               ],
+            ),
+            ),
             ),
 
             const SizedBox(height: 20),
