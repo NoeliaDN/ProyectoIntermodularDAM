@@ -127,6 +127,19 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
 
   // ── Helper: bandera del país ─────────────────────────────────────
   /// Convierte el nombre del país en español al emoji de su bandera.
+  /// Devuelve el rango de altitud como "1200 – 1800 m.s.n.m.".
+  /// Si solo hay uno de los dos valores, muestra solo ese.
+  String _altitudRango(double? min, double? max) {
+    if (min != null && max != null) {
+      return '${min.toStringAsFixed(0)} – ${max.toStringAsFixed(0)} m.s.n.m.';
+    } else if (min != null) {
+      return '${min.toStringAsFixed(0)} m.s.n.m.';
+    } else if (max != null) {
+      return '${max.toStringAsFixed(0)} m.s.n.m.';
+    }
+    return '';
+  }
+
   /// Los emojis de bandera son caracteres Unicode especiales (indicadores
   /// regionales). Si el país no está mapeado, devuelve un globo genérico.
   String _countryFlag(String pais) {
@@ -358,59 +371,105 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
 
-            // Región
-            if (coffee.region != null)
-              Row(
-                children: [
-                  Icon(Icons.location_on_outlined,
-                      size: 18, color: theme.colorScheme.onSurfaceVariant),
-                  const SizedBox(width: 4),
-                  Text(
-                    coffee.region!,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
+            // Dos columnas: izquierda → región + altitud | derecha → variedad + productor
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Columna izquierda ──────────────────────────────
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (coffee.region != null)
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.location_on_outlined,
+                                size: 16, color: theme.colorScheme.onSurfaceVariant),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                coffee.region!,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      if (coffee.altitudMin != null || coffee.altitudMax != null) ...[
+                        const SizedBox(height: 4),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.terrain_outlined,
+                                size: 16, color: theme.colorScheme.onSurfaceVariant),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                _altitudRango(coffee.altitudMin, coffee.altitudMax),
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
                   ),
-                ],
-              ),
+                ),
 
-            // // País (nombre completo, debajo de la región)
-            // if (coffee.pais != null) ...[  
-            //   const SizedBox(height: 4),
-            //   Row(
-            //     children: [
-            //       Icon(Icons.public_outlined,
-            //           size: 18, color: theme.colorScheme.onSurfaceVariant),
-            //       const SizedBox(width: 4),
-            //       Text(
-            //         coffee.pais!,
-            //         style: theme.textTheme.bodyMedium?.copyWith(
-            //           color: theme.colorScheme.onSurfaceVariant,
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ],
+                const SizedBox(width: 12),
 
-            //  Altitud 
-            if (coffee.altitudMedia != null) ...[
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Icon(Icons.terrain_outlined,
-                      size: 18, color: theme.colorScheme.onSurfaceVariant),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${coffee.altitudMedia!.toStringAsFixed(0)} m.s.n.m.',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
+                // ── Columna derecha ────────────────────────────────
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (coffee.variedad != null)
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.eco_outlined,
+                                size: 16, color: theme.colorScheme.onSurfaceVariant),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                coffee.variedad!,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      if (coffee.productor != null) ...[
+                        const SizedBox(height: 4),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.person_outline_rounded,
+                                size: 16, color: theme.colorScheme.onSurfaceVariant),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                coffee.productor!,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
                   ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
 
             const SizedBox(height: 20),
             const Divider(),
