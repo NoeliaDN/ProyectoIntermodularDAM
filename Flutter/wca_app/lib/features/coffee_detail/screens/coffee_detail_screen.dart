@@ -229,15 +229,9 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
                           child: Center(child: CircularProgressIndicator()),
                         ),
 
-                      // ── 4. Detalle de la variedad ──
-                      if (_selectedVariety != null) ...[
+                      // ── 4. Detalle de la variedad (incluye cafés asociados) ──
+                      if (_selectedVariety != null)
                         _buildVarietyDetail(theme),
-                        const SizedBox(height: 24),
-
-                        // ── 5. Cafés asociados ──
-                        if (_selectedVariety!.cafes.isNotEmpty)
-                          _buildCafesList(theme),
-                      ],
 
                       const SizedBox(height: 40),
                     ],
@@ -347,7 +341,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
   /// Está envuelto en una Card con altura fija (400px) para que el
   /// SingleChildScrollView pueda calcular su tamaño. Sin altura fija
   /// el iframe intentaría expandirse infinitamente dentro del scroll.
-  /// TOD0: ir retocando el Power BI para que se adapte bien a esta altura.
+  /// TOD0: ir retocando el Power BI para que se adapte bien a esta altura y la altura según el tamaño de las pantallas.
   Widget _buildPowerBiMap(ThemeData theme) {
     final bool isDesktop = !kIsWeb &&
         (defaultTargetPlatform == TargetPlatform.windows ||
@@ -372,7 +366,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
                     size: 20, color: theme.colorScheme.primary),
                 const SizedBox(width: 8),
                 Text(
-                  'Mapa de Variedades',
+                  'Mapa de Variedades y sus Productores',
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -382,12 +376,12 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
-            child: Text(
-              'Distribución geográfica de las regiones de cultivo',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
+            // child: Text(
+            //   'Distribución geográfica de las regiones de cultivo',
+            //   style: theme.textTheme.bodySmall?.copyWith(
+            //     color: theme.colorScheme.onSurfaceVariant,
+            //   ),
+            // ),
           ),
           SizedBox(
             height: 400,
@@ -489,7 +483,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
                   const SizedBox(width: 6),
                   Text(
                     variety.cafes.isEmpty
-                        ? 'Sin cafés asociados en la base de datos'
+                        ? 'Sin cafés asociados en la base de datos (MVP)'
                         : '${variety.cafes.length} café${variety.cafes.length > 1 ? 's' : ''} asociado${variety.cafes.length > 1 ? 's' : ''}',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.primary,
@@ -499,44 +493,37 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
                 ],
               ),
             ),
+
+            // ── Lista de cafés dentro de la misma Card ──
+            if (variety.cafes.isNotEmpty) ...[
+              const SizedBox(height: 20),
+              const Divider(),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(Icons.coffee_rounded,
+                      size: 20, color: theme.colorScheme.primary),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Cafés característicos de esta variedad y sus productores',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              // Generamos las tarjetas de café (si hay):
+              ...variety.cafes.map((cafe) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: _buildCafeCard(theme, cafe),
+              )),
+            ],
           ],
         ),
       ),
-    );
-  }
-
-  // ── Widget: Lista de cafés asociados ─────────────────────────────
-  /// Muestra cada café (si los hay) como una Card individual con productor, región y país.
-  ///
-  Widget _buildCafesList(ThemeData theme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(Icons.coffee_rounded,
-                size: 20, color: theme.colorScheme.primary),
-            const SizedBox(width: 8),
-            Text(
-              'Cafés que cultivan esta variedad',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        ListView.separated(
-          shrinkWrap: true,// si no intenta ocupar altyura infinita dentro del scroll
-          physics: const NeverScrollableScrollPhysics(),//porque ya estamos dentro de un SingleChildScrollView
-          itemCount: _selectedVariety!.cafes.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 10),
-          itemBuilder: (context, index) {
-            final cafe = _selectedVariety!.cafes[index];
-            return _buildCafeCard(theme, cafe);
-          },
-        ),
-      ],
     );
   }
 
