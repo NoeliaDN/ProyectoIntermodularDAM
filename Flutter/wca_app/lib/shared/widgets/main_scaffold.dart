@@ -8,7 +8,8 @@ import 'package:wca_app/features/coffee_detail/screens/coffee_detail_screen.dart
 /// Este widget controla la navegación entre las 3 secciones de la app:
 ///   0 → Mapa global (Home)      — icono: globo terráqueo
 ///   1 → Listado de cafés        — icono: taza de café
-///   2 → Variedades              — icono: grano de café? --> TOD0: revisar icono
+///   2 → Variedades              — icono: hoja de café (eco)
+/// 
 
 
 class MainScaffold extends StatefulWidget {/// El estado del índice seleccionado se gestiona con un [StatefulWidget]

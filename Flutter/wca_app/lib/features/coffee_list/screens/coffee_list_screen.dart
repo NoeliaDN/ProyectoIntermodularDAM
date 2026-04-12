@@ -125,8 +125,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
     });
   }
 
-  // ── Helper: bandera del país ─────────────────────────────────────
-  /// Convierte el nombre del país en español al emoji de su bandera.
+  
   /// Devuelve el rango de altitud como "1200 – 1800 m.s.n.m.".
   /// Si solo hay uno de los dos valores, muestra solo ese.
   String _altitudRango(double? min, double? max) {
@@ -140,8 +139,9 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
     return '';
   }
 
-  /// Los emojis de bandera son caracteres Unicode especiales (indicadores
-  /// regionales). Si el país no está mapeado, devuelve un globo genérico.
+// ── Helper: bandera del país ─────────────────────────────────────
+  /// Convierte el nombre del país en español al emoji de su bandera (caracter unicode).
+  ///Si el país no está mapeado, devuelve un globo genérico.
   String _countryFlag(String pais) {
     const flags = {
       'etiopía': '🇪🇹', 'etiopia': '🇪🇹',
