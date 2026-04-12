@@ -531,6 +531,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
   Widget _buildCafeCard(ThemeData theme, VariedadCafeDto cafe) {
     return Card(
       elevation: 0,
+      color: theme.colorScheme.surfaceBright,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: theme.colorScheme.outlineVariant),
