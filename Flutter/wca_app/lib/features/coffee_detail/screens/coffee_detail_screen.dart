@@ -42,32 +42,48 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
   String? _error;
 
   // ── Power BI (iframe web) ────────────────────────────────────────
-  /// Identificador único para el PlatformView del iframe.
-  /// Cada HtmlElementView necesita un viewType distinto; si usáramos
-  /// el mismo que HomeScreen, Flutter reutilizaría la misma vista.
+
   final String _viewType = 'power-bi-varieties-iframe';
   bool _iframeRegistered = false;
+
+  /// Referencia al elemento HTML del iframe para manipular su CSS directamente, así lo puedo ocultar mientras está activo el dropdown.
+  web.HTMLIFrameElement? _iframeElement;
+
+  /// FocusNode del selector. Cuando el dropdown se abre (gana foco) ocultamos
+  /// el iframe vía CSS; cuando se cierra (pierde foco) lo restauramos.
+  late final FocusNode _dropdownFocusNode;
 
   // ── Ciclo de vida ────────────────────────────────────────────────
   @override
   void initState() {
     super.initState();
+    _dropdownFocusNode = FocusNode()..addListener(_onDropdownFocusChange);
     _registerIframe();
     _loadVarietyNames();
   }
 
   @override
   void dispose() {
+    _dropdownFocusNode
+      ..removeListener(_onDropdownFocusChange)
+      ..dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
+  /// Cuando el dropdown se despliega o no, mostramos / ocultamos el iframe
+  /// Así el iframe no se recarga porque nunca sale del DOM.
+  void _onDropdownFocusChange() {
+    if (!kIsWeb || _iframeElement == null) return;
+    final isOpen = _dropdownFocusNode.hasFocus;
+    _iframeElement!.style.visibility = isOpen ? 'hidden' : 'visible';
+    _iframeElement!.style.pointerEvents = isOpen ? 'none' : 'auto';
+  }
+
   /// Registra el iframe de Power BI en el registry de Flutter Web.
-  ///
-  /// `platformViewRegistry.registerViewFactory` asocia un String (viewType)
-  /// con una función que crea un HTMLElement. Flutter lo inserta como
-  /// un elemento HTML real dentro del DOM, fuera del canvas de Flutter.
-  /// Por eso puede mostrar contenido de terceros (como Power BI).
+ 
+  /// Flutter lo inserta como un elemento HTML real dentro del DOM, fuera del canvas de Flutter.
+
   void _registerIframe() {
     // Solo en web y solo una vez:
     if (!kIsWeb || _iframeRegistered) return;
@@ -81,6 +97,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
           ..style.width = '100%'
           ..style.height = '100%'
           ..allow = 'fullscreen';
+        _iframeElement = iframe; // referencia para cambiarCSS
         return iframe;
       },
     );
@@ -308,6 +325,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
               hintText: 'Buscar variedad...',
               enableFilter: true,
               requestFocusOnTap: true,
+              focusNode: _dropdownFocusNode,
               leadingIcon: Icon(
                 Icons.search_rounded,
                 color: theme.colorScheme.primary,
@@ -385,16 +403,36 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
           ),
           SizedBox(
             height: 400,
-            child: isDesktop
-                ? Center(
-                    child: Text(
-                      'Abre la app en Chrome para ver el mapa.',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
+            child: kIsWeb
+                // El CSS lo oculta mientras el dropdown está abierto:
+                ? Stack(
+                    children: [
+                      // Fondo que se ve cuando el iframe está oculto:
+                      Container(
+                        color: theme.colorScheme.surfaceContainerLowest,
                       ),
-                    ),
+                      HtmlElementView(viewType: _viewType),
+                    ],
                   )
-                : HtmlElementView(viewType: _viewType),
+                : isDesktop
+                    ? Center(
+                        child: Text(
+                          'Abre la app en Chrome para ver el mapa.',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      )
+                    // Móvil (Android/iOS): requiere webview_flutter.
+                    // Ver home_screen_mobile.dart como referencia.
+                    : Center(
+                        child: Text(
+                          'Abre la app en Chrome o en el móvil para ver el mapa.',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
           ),
         ],
       ),
