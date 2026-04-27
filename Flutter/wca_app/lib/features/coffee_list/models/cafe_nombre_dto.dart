@@ -7,7 +7,6 @@ class CafeNombreDto {
   CafeNombreDto({required this.id, required this.nombre});
 
   /// Factoría que crea una instancia desde el JSON de la API.
-  /// Equivalente a deserializar un DTO en C#.
   factory CafeNombreDto.fromJson(Map<String, dynamic> json) {
     return CafeNombreDto(
       id: json['id'] as int,
