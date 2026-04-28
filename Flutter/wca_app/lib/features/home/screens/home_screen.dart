@@ -23,16 +23,57 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mapa Global'),
         centerTitle: true,
       ),
-      body: _isDesktop
-          ? const Center(
-              child: Text('Abre la app en Chrome o en el móvil para ver el mapa.'),
-            )
-          : const platform.PowerBiDashboard(),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Card(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: theme.colorScheme.outlineVariant),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
+                child: Row(
+                  children: [
+                    Icon(Icons.map_outlined,
+                        size: 20, color: theme.colorScheme.primary),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Mapa Global de Cafés',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: _isDesktop
+                    ? Center(
+                        child: Text(
+                          'Abre la app en Chrome o en el móvil para ver el mapa.',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      )
+                    : const platform.PowerBiDashboard(),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
