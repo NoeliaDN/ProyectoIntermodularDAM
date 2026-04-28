@@ -16,11 +16,15 @@ class AppConstants {
   static const String apiBaseUrl = 'https://localhost:7082/api'; // para web local
 
   // ── URLs del dashboard de Power BI ─────────────────────────────
-  // Dashboard de escritorio (layout horizontal, para web y desktop):
-  static const String powerBiDesktopUrl =
+  // Dashboard de web:
+  static const String powerBiGlobalUrl =
       'https://app.powerbi.com/view?r=eyJrIjoiMmMwODRhMGUtZTQ1ZC00ZWQxLTkxNDQtYzk1MGEzZjY5NDYwIiwidCI6IjY4NTE5ZTQ4LTgzZjMtNDM1Zi1hMzhhLTFhN2FhNzdiYTk4NyIsImMiOjh9&pageName=f1b3b895ca4a54abef98';
 
   // TOD0: publicar el dashboard móvil y actualizar URL:
   static const String powerBiMobileUrl =
       'https://app.powerbi.com/view?r=eyJrIjoiMmMwODRhMGUtZTQ1ZC00ZWQxLTkxNDQtYzk1MGEzZjY5NDYwIiwidCI6IjY4NTE5ZTQ4LTgzZjMtNDM1Zi1hMzhhLTFhN2FhNzdiYTk4NyIsImMiOjh9&pageName=f1b3b895ca4a54abef98';
+
+  // Dashboard de variedades y productores:
+  static const String powerBiVariedadesUrl =
+      'https://app.powerbi.com/view?r=eyJrIjoiMzVjODIyNzItOTBlOS00YmUxLWJkNTgtNTBlMTJjZDgxNGY0IiwidCI6IjY4NTE5ZTQ4LTgzZjMtNDM1Zi1hMzhhLTFhN2FhNzdiYTk4NyIsImMiOjh9&pageName=6389bee9860b8cd09808';
 }
