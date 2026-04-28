@@ -46,11 +46,12 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
   final String _viewType = 'power-bi-varieties-iframe';
   bool _iframeRegistered = false;
 
-  /// Referencia al elemento HTML del iframe para manipular su CSS directamente, así lo puedo ocultar mientras está activo el dropdown.
+  /// Referencia al elemento HTML del iframe para manipular su CSS directamente,
+  /// así lo puedo ocultar mientras está activo el dropdown.
   web.HTMLIFrameElement? _iframeElement;
 
-  /// FocusNode del selector. Cuando el dropdown se abre (gana foco) ocultamos
-  /// el iframe vía CSS; cuando se cierra (pierde foco) lo restauramos.
+  /// FocusNode del selector. Cuando el dropdown se abre ocultamos
+  /// el iframe vía CSS; cuando se cierra lo restauramos.
   late final FocusNode _dropdownFocusNode;
 
   // ── Ciclo de vida ────────────────────────────────────────────────
@@ -71,7 +72,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
     super.dispose();
   }
 
-  /// Cuando el dropdown se despliega o no, mostramos / ocultamos el iframe
+  /// Cuando el dropdown se despliega o no, mostramos / ocultamos el iframe.
   /// Así el iframe no se recarga porque nunca sale del DOM.
   void _onDropdownFocusChange() {
     if (!kIsWeb || _iframeElement == null) return;
@@ -81,7 +82,6 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
   }
 
   /// Registra el iframe de Power BI en el registry de Flutter Web.
- 
   /// Flutter lo inserta como un elemento HTML real dentro del DOM, fuera del canvas de Flutter.
 
   void _registerIframe() {
@@ -91,7 +91,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
       _viewType,
       (int viewId) {
         final iframe = web.HTMLIFrameElement()
-          // TODO: Cambia esta URL cuando tengas el dashboard de variedades.
+          // TODO: Cambiar la URL cuando tenga el dashboard de variedades.
           ..src = AppConstants.powerBiDesktopUrl
           ..style.border = 'none'
           ..style.width = '100%'
@@ -125,13 +125,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
   }
 
   /// Llamado al seleccionar una variedad en el DropdownMenu.
-  ///
-  /// Patrón idéntico al `_onCoffeeSelected` de CoffeeListScreen:
-  /// 1. Ponemos estado "cargando" → spinner.
-  /// 2. Hacemos la petición HTTP.
-  /// 3. Actualizamos estado con los datos recibidos.
-  /// 4. Hacemos scroll a la sección de detalle.
-  Future<void> _onVarietySelected(int id) async {
+   Future<void> _onVarietySelected(int id) async {
     setState(() {
       _loadingDetail = true;
       _selectedVariety = null;
@@ -156,10 +150,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
   }
 
   /// Scroll suave hasta la sección de detalle:
-  ///
-  /// - `addPostFrameCallback` espera a que el frame actual termine de
-  ///   pintarse para buscar su posición (porque acabamos de hacer setState y el widget de detalle
-  ///   aún no existe en el árbol).
+  
   void _scrollToDetail() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_detailSectionKey.currentContext != null) {
@@ -356,15 +347,19 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
   // ── Widget: Mapa Power BI ────────────────────────────────────────
   /// Muestra el mapa de Power BI en web, o un aviso en escritorio.
   ///
-  /// Está envuelto en una Card con altura fija (400px) para que el
+  /// Está envuelto en una Card con altura fija para que el
   /// SingleChildScrollView pueda calcular su tamaño. Sin altura fija
   /// el iframe intentaría expandirse infinitamente dentro del scroll.
-  /// TOD0: ir retocando el Power BI para que se adapte bien a esta altura y la altura según el tamaño de las pantallas.
+  /// TOD0: ir retocando el Power BI para que se adapte bien a la altura según el tamaño de las pantallas.
   Widget _buildPowerBiMap(ThemeData theme) {
     final bool isDesktop = !kIsWeb &&
         (defaultTargetPlatform == TargetPlatform.windows ||
             defaultTargetPlatform == TargetPlatform.linux ||
             defaultTargetPlatform == TargetPlatform.macOS);
+
+    // Altura responsiva: 59% de la pantalla, entre 320px y 700px.
+    final double mapHeight =
+        (MediaQuery.sizeOf(context).height * 0.59).clamp(320.0, 700.0);
 
     return Card(
       elevation: 0,
@@ -402,7 +397,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
             // ),
           ),
           SizedBox(
-            height: 400,
+            height: mapHeight, // altura adaptable según tamaño de pantalla
             child: kIsWeb
                 // El CSS lo oculta mientras el dropdown está abierto:
                 ? Stack(
