@@ -91,8 +91,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
       _viewType,
       (int viewId) {
         final iframe = web.HTMLIFrameElement()
-          // TODO: Cambiar la URL cuando tenga el dashboard de variedades.
-          ..src = AppConstants.powerBiDesktopUrl
+          ..src = AppConstants.powerBiVariedadesUrl
           ..style.border = 'none'
           ..style.width = '100%'
           ..style.height = '100%'
