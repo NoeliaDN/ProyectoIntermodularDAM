@@ -43,21 +43,25 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
 
   // ── Power BI (iframe web) ────────────────────────────────────────
 
-  final String _viewType = 'power-bi-varieties-iframe';
-  bool _iframeRegistered = false;
+  /// Contador estático--> cada instancia del widget obtiene un viewType único,
+  /// lo que permite registrar un nuevo factory aunque la pantalla se haya
+  /// visitado antes, si no vuelve el error en el selector.
+  static int _instanceCount = 0;
+  late final String _viewType;
 
   /// Referencia al elemento HTML del iframe para manipular su CSS directamente,
   /// así lo puedo ocultar mientras está activo el dropdown.
   web.HTMLIFrameElement? _iframeElement;
 
   /// FocusNode del selector. Cuando el dropdown se abre ocultamos
-  /// el iframe vía CSS; cuando se cierra lo restauramos.
+  /// el iframe vía CSS; cuando se cierra, lo restauramos.
   late final FocusNode _dropdownFocusNode;
 
   // ── Ciclo de vida ────────────────────────────────────────────────
   @override
   void initState() {
     super.initState();
+    _viewType = 'power-bi-varieties-iframe-${_instanceCount++}';
     _dropdownFocusNode = FocusNode()..addListener(_onDropdownFocusChange);
     _registerIframe();
     _loadVarietyNames();
@@ -85,8 +89,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
   /// Flutter lo inserta como un elemento HTML real dentro del DOM, fuera del canvas de Flutter.
 
   void _registerIframe() {
-    // Solo en web y solo una vez:
-    if (!kIsWeb || _iframeRegistered) return;
+    if (!kIsWeb) return;
     ui_web.platformViewRegistry.registerViewFactory(
       _viewType,
       (int viewId) {
@@ -100,7 +103,6 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
         return iframe;
       },
     );
-    _iframeRegistered = true;
   }
 
   // ── Lógica de negocio ────────────────────────────────────────────
