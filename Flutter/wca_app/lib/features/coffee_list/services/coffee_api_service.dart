@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../core/constants/app_constants.dart';
+import '../../../core/network/http_client_web.dart'
+    if (dart.library.io) '../../../core/network/http_client_noweb_io.dart';
 import '../models/cafe_nombre_dto.dart';
 import '../models/cafe_lote_dto.dart';
 import '../models/sca_dto.dart';
@@ -15,7 +17,7 @@ class CoffeeApiService {
   /// Cliente HTTP inyectable (útil para tests con mocks).
   final http.Client _client;
 
-  CoffeeApiService({http.Client? client}) : _client = client ?? http.Client();
+  CoffeeApiService({http.Client? client}) : _client = client ?? createHttpClient();
 
   // ── GET /api/cafes/nombres ───────────────────────────────────────
   /// Obtiene la lista de todos los cafés (solo id + nombre) para el selector.
@@ -25,7 +27,7 @@ class CoffeeApiService {
 
     if (response.statusCode == 200) {
       // Decodificamos el JSON (viene como array []) y mapeamos cada
-      // elemento a un CafeNombreDto. Igual que .Select() en LINQ.
+      // elemento a un CafeNombreDto.
       final List<dynamic> jsonList = json.decode(response.body);
       return jsonList.map((item) => CafeNombreDto.fromJson(item)).toList();
     } else {

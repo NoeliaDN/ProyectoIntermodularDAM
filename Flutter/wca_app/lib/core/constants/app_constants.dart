@@ -4,6 +4,8 @@
 /// - Cambiar URLs al pasar de desarrollo local a producción (Azure).
 /// - Evitar "magic strings" dispersas por el código.
 /// - Documentar qué valores usa la app y por qué.
+import 'package:flutter/foundation.dart';
+
 class AppConstants {
   AppConstants._(); // No instanciable.
 
@@ -11,9 +13,11 @@ class AppConstants {
   static const String appName = 'World Coffee Atlas';
 
   // ── URLs de la API REST (ASP.NET Core) ─────────────────────────
-  // Para emulador Android, usa 10.0.2.2 en vez de localhost.
-  // Para dispositivo físico, usa la IP de tu PC (ej: 192.168.1.X).
-  static const String apiBaseUrl = 'https://localhost:7082/api'; // para web local
+  // En web: localhost apunta al PC de desarrollo → se usa directamente.
+  // En Android (emulador): 10.0.2.2 es la IP del PC host desde el emulador.
+  static String get apiBaseUrl => kIsWeb
+      ? 'https://localhost:7082/api'
+      : 'https://10.0.2.2:7082/api';
 
   // ── URLs del dashboard de Power BI ─────────────────────────────
   // Dashboard de web:

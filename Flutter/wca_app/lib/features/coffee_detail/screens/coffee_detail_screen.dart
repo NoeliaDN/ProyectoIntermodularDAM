@@ -1,11 +1,21 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'dart:ui_web' as ui_web;
-import 'package:web/web.dart' as web;
+import 'package:webview_flutter/webview_flutter.dart';
 import '../../../core/constants/app_constants.dart';
+import 'iframe_helper_noweb.dart'
+    if (dart.library.html) 'iframe_helper_web.dart';
 import '../models/variedad_nombre_dto.dart';
 import '../models/variedad_detalle_dto.dart';
 import '../services/variety_api_service.dart';
+
+/// Reconocedor de arrastre vertical que siempre gana,
+/// incluso contra el ScrollView padre, si no el WebView puede
+/// recibir scroll vertical sin que el contenedor lo intercepte.
+class _EagerVerticalDrag extends VerticalDragGestureRecognizer {
+  @override
+  void rejectGesture(int pointer) => acceptGesture(pointer);
+}
 
 /// Pantalla de Variedades de café.
 ///
@@ -49,21 +59,29 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
   static int _instanceCount = 0;
   late final String _viewType;
 
-  /// Referencia al elemento HTML del iframe para manipular su CSS directamente,
-  /// así lo puedo ocultar mientras está activo el dropdown.
-  web.HTMLIFrameElement? _iframeElement;
+  /// Referencia al iframe para manipular su visibilidad CSS cuando el dropdown
+  /// está abierto. En plataformas no-web, los métodos son no-op.
+  late IframeRef _iframeRef;
 
   /// FocusNode del selector. Cuando el dropdown se abre ocultamos
   /// el iframe vía CSS; cuando se cierra, lo restauramos.
   late final FocusNode _dropdownFocusNode;
+
+  // ── Power BI (WebView móvil) ─────────────────────────────────────
+  WebViewController? _webViewController;
 
   // ── Ciclo de vida ────────────────────────────────────────────────
   @override
   void initState() {
     super.initState();
     _viewType = 'power-bi-varieties-iframe-${_instanceCount++}';
+    _iframeRef = createAndRegisterIframe(_viewType, AppConstants.powerBiVariedadesUrl);
     _dropdownFocusNode = FocusNode()..addListener(_onDropdownFocusChange);
-    _registerIframe();
+    if (!kIsWeb) {
+      _webViewController = WebViewController()
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..loadRequest(Uri.parse(AppConstants.powerBiVariedadesUrl));
+    }
     _loadVarietyNames();
   }
 
@@ -79,30 +97,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
   /// Cuando el dropdown se despliega o no, mostramos / ocultamos el iframe.
   /// Así el iframe no se recarga porque nunca sale del DOM.
   void _onDropdownFocusChange() {
-    if (!kIsWeb || _iframeElement == null) return;
-    final isOpen = _dropdownFocusNode.hasFocus;
-    _iframeElement!.style.visibility = isOpen ? 'hidden' : 'visible';
-    _iframeElement!.style.pointerEvents = isOpen ? 'none' : 'auto';
-  }
-
-  /// Registra el iframe de Power BI en el registry de Flutter Web.
-  /// Flutter lo inserta como un elemento HTML real dentro del DOM, fuera del canvas de Flutter.
-
-  void _registerIframe() {
-    if (!kIsWeb) return;
-    ui_web.platformViewRegistry.registerViewFactory(
-      _viewType,
-      (int viewId) {
-        final iframe = web.HTMLIFrameElement()
-          ..src = AppConstants.powerBiVariedadesUrl
-          ..style.border = 'none'
-          ..style.width = '100%'
-          ..style.height = '100%'
-          ..allow = 'fullscreen';
-        _iframeElement = iframe; // referencia para cambiarCSS
-        return iframe;
-      },
-    );
+    _iframeRef.setVisibility(!_dropdownFocusNode.hasFocus);
   }
 
   // ── Lógica de negocio ────────────────────────────────────────────
@@ -419,15 +414,22 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
                           ),
                         ),
                       )
-                    // Móvil (Android/iOS): requiere webview_flutter.
-                    // Ver home_screen_mobile.dart como referencia.
-                    : Center(
-                        child: Text(
-                          'Abre la app en Chrome o en el móvil para ver el mapa.',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
+                    // Móvil (Android/iOS): cede todos los gestos al WebView.
+                    // _EagerVerticalDrag evita que el ScrollView padre gane
+                    // la arena de gestos en el eje vertical.
+                    : WebViewWidget(
+                        controller: _webViewController!,
+                        gestureRecognizers: {
+                          Factory<_EagerVerticalDrag>(
+                            () => _EagerVerticalDrag(),
                           ),
-                        ),
+                          Factory<HorizontalDragGestureRecognizer>(
+                            () => HorizontalDragGestureRecognizer(),
+                          ),
+                          Factory<ScaleGestureRecognizer>(
+                            () => ScaleGestureRecognizer(),
+                          ),
+                        },
                       ),
           ),
         ],
