@@ -77,11 +77,11 @@ flutter run -d emulator-5554
 flutter run -d windows
 ```
 
-> El certificado TLS de desarrollo de ASP.NET Core es auto-firmado. En Android el cliente HTTP lo acepta automáticamente (solo en desarrollo).
+> El certificado TLS de desarrollo de ASP.NET Core es auto-firmado. En Android el cliente HTTP lo acepta automáticamente (solo en desarrollo, para agilizar).
 
 ### 4. Power BI
 
-Abre los archivos `.pbix` de la carpeta `PowerBI/` con Power BI Desktop para editar o publicar los dashboards. Las URLs públicas ya están configuradas en la app.
+Abre los archivos `.pbix` de la carpeta `PowerBI/` con Power BI Desktop para ver o editar los dashboards. Las URLs públicas ya están configuradas en la app (dashboards originales publicados).
 
 ---
 
