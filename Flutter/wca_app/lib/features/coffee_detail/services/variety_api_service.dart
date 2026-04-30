@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../core/constants/app_constants.dart';
+import '../../../core/network/http_client_web.dart'
+    if (dart.library.io) '../../../core/network/http_client_noweb_io.dart';
 import '../models/variedad_nombre_dto.dart';
 import '../models/variedad_detalle_dto.dart';
 
@@ -9,10 +11,10 @@ import '../models/variedad_detalle_dto.dart';
 /// Mismo patrón que [CoffeeApiService]: encapsula URLs y deserialización.
 /// La UI solo llama a métodos con tipos Dart, sin saber nada de HTTP.
 class VarietyApiService {
-  /// Cliente HTTP inyectable (útil para tests).
+  /// Cliente HTTP inyectable (futuros tests?).
   final http.Client _client;
 
-  VarietyApiService({http.Client? client}) : _client = client ?? http.Client();
+  VarietyApiService({http.Client? client}) : _client = client ?? createHttpClient();
 
   // ── GET /api/Variedades/nombres ──────────────────────────────────
   /// Obtiene la lista de todas las variedades (solo id + nombre).

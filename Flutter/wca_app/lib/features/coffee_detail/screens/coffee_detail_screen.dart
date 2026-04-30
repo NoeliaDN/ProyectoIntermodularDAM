@@ -1,11 +1,28 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'dart:ui_web' as ui_web;
-import 'package:web/web.dart' as web;
+import 'package:webview_flutter/webview_flutter.dart';
 import '../../../core/constants/app_constants.dart';
+import 'iframe_helper_noweb.dart'
+    if (dart.library.html) 'iframe_helper_web.dart';
 import '../models/variedad_nombre_dto.dart';
 import '../models/variedad_detalle_dto.dart';
 import '../services/variety_api_service.dart';
+
+/// Reconocedor de arrastre vertical que gana el arena de gestos de forma inmediata,
+/// antes de que el SingleChildScrollView padre pueda reclamar el gesto.
+/// Esto permite que el WebView reciba el scroll vertical sin competencia.
+class _EagerVerticalDrag extends VerticalDragGestureRecognizer {
+  @override
+  void addAllowedPointer(PointerDownEvent event) {
+    super.addAllowedPointer(event);
+    // aquí se supera al scroll padre aceptando rápido el gesto:
+    resolve(GestureDisposition.accepted);
+  }
+
+  @override
+  void rejectGesture(int pointer) => acceptGesture(pointer);
+}
 
 /// Pantalla de Variedades de café.
 ///
@@ -31,7 +48,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
   final GlobalKey _detailSectionKey = GlobalKey();
 
   // ── Estado ───────────────────────────────────────────────────────
-  /// Lista de nombres para el selector. Se carga una vez en initState.
+  /// Lista de nombres para el selector.
   List<VariedadNombreDto> _varietyNames = [];
 
   /// Detalle completo de la variedad seleccionada (incluye cafés asociados).
@@ -45,25 +62,33 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
 
   /// Contador estático--> cada instancia del widget obtiene un viewType único,
   /// lo que permite registrar un nuevo factory aunque la pantalla se haya
-  /// visitado antes, si no vuelve el error en el selector.
+  /// visitado antes, si no, vuelve el error en el selector, porque la instancia anterior sigue registrada.
   static int _instanceCount = 0;
   late final String _viewType;
 
-  /// Referencia al elemento HTML del iframe para manipular su CSS directamente,
-  /// así lo puedo ocultar mientras está activo el dropdown.
-  web.HTMLIFrameElement? _iframeElement;
+  /// Referencia al iframe para manipular su visibilidad CSS cuando el dropdown
+  /// está abierto. En plataformas no-web, los métodos son no-op.
+  late IframeRef _iframeRef;
 
   /// FocusNode del selector. Cuando el dropdown se abre ocultamos
   /// el iframe vía CSS; cuando se cierra, lo restauramos.
   late final FocusNode _dropdownFocusNode;
+
+  // ── Power BI (WebView móvil) ─────────────────────────────────────
+  WebViewController? _webViewController;
 
   // ── Ciclo de vida ────────────────────────────────────────────────
   @override
   void initState() {
     super.initState();
     _viewType = 'power-bi-varieties-iframe-${_instanceCount++}';
+    _iframeRef = createAndRegisterIframe(_viewType, AppConstants.powerBiVariedadesUrl);
     _dropdownFocusNode = FocusNode()..addListener(_onDropdownFocusChange);
-    _registerIframe();
+    if (!kIsWeb) {
+      _webViewController = WebViewController()
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..loadRequest(Uri.parse(AppConstants.powerBiVariedadesUrl));
+    }
     _loadVarietyNames();
   }
 
@@ -79,30 +104,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
   /// Cuando el dropdown se despliega o no, mostramos / ocultamos el iframe.
   /// Así el iframe no se recarga porque nunca sale del DOM.
   void _onDropdownFocusChange() {
-    if (!kIsWeb || _iframeElement == null) return;
-    final isOpen = _dropdownFocusNode.hasFocus;
-    _iframeElement!.style.visibility = isOpen ? 'hidden' : 'visible';
-    _iframeElement!.style.pointerEvents = isOpen ? 'none' : 'auto';
-  }
-
-  /// Registra el iframe de Power BI en el registry de Flutter Web.
-  /// Flutter lo inserta como un elemento HTML real dentro del DOM, fuera del canvas de Flutter.
-
-  void _registerIframe() {
-    if (!kIsWeb) return;
-    ui_web.platformViewRegistry.registerViewFactory(
-      _viewType,
-      (int viewId) {
-        final iframe = web.HTMLIFrameElement()
-          ..src = AppConstants.powerBiVariedadesUrl
-          ..style.border = 'none'
-          ..style.width = '100%'
-          ..style.height = '100%'
-          ..allow = 'fullscreen';
-        _iframeElement = iframe; // referencia para cambiarCSS
-        return iframe;
-      },
-    );
+    _iframeRef.setVisibility(!_dropdownFocusNode.hasFocus);
   }
 
   // ── Lógica de negocio ────────────────────────────────────────────
@@ -150,8 +152,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
     }
   }
 
-  /// Scroll suave hasta la sección de detalle:
-  
+  /// Scroll suave hasta la sección de detalle:  
   void _scrollToDetail() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_detailSectionKey.currentContext != null) {
@@ -226,19 +227,19 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
 
                       const SizedBox(height: 24),
 
-                      // ── 2. Mapa Power BI ── (siempre visible)
+                      // ── Mapa Power BI ── (altura fija para que el scroll funcione)
                       _buildPowerBiMap(theme),
 
                       const SizedBox(height: 24),
 
-                      // ── 3. Spinner mientras carga detalles ──
+                      // ── Spinner  ──
                       if (_loadingDetail)
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 40),
                           child: Center(child: CircularProgressIndicator()),
                         ),
 
-                      // ── 4. Detalle de la variedad (incluye cafés asociados) ──
+                      // ── Detalle de la variedad (incluye cafés asociados si procede) ──
                       if (_selectedVariety != null)
                         _buildVarietyDetail(theme),
 
@@ -346,21 +347,16 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
   }
 
   // ── Widget: Mapa Power BI ────────────────────────────────────────
-  /// Muestra el mapa de Power BI en web, o un aviso en escritorio.
+  /// Muestra el mapa de Power BI en web, o un aviso en escritorio (MVP).
   ///
   /// Está envuelto en una Card con altura fija para que el
   /// SingleChildScrollView pueda calcular su tamaño. Sin altura fija
   /// el iframe intentaría expandirse infinitamente dentro del scroll.
-  /// TOD0: ir retocando el Power BI para que se adapte bien a la altura según el tamaño de las pantallas.
   Widget _buildPowerBiMap(ThemeData theme) {
     final bool isDesktop = !kIsWeb &&
         (defaultTargetPlatform == TargetPlatform.windows ||
             defaultTargetPlatform == TargetPlatform.linux ||
             defaultTargetPlatform == TargetPlatform.macOS);
-
-    // Altura responsiva: 59% de la pantalla, entre 320px y 700px.
-    final double mapHeight =
-        (MediaQuery.sizeOf(context).height * 0.59).clamp(320.0, 700.0);
 
     return Card(
       elevation: 0,
@@ -388,17 +384,13 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
-            // child: Text(
-            //   'Distribución geográfica de las regiones de cultivo',
-            //   style: theme.textTheme.bodySmall?.copyWith(
-            //     color: theme.colorScheme.onSurfaceVariant,
-            //   ),
-            // ),
-          ),
+          const SizedBox(height: 12),
+          // Web: altura responsiva (porcentaje de pantalla) para que el iframe se expanda bien.
+          // Móvil: 400px fijos (el WebView está fuera de un ScrollView, no hay overflow).
           SizedBox(
-            height: mapHeight, // altura adaptable según tamaño de pantalla
+            height: kIsWeb
+                ? (MediaQuery.sizeOf(context).height * 0.59).clamp(320.0, 700.0) // 59% para web
+                : 400,
             child: kIsWeb
                 // El CSS lo oculta mientras el dropdown está abierto:
                 ? Stack(
@@ -419,15 +411,22 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
                           ),
                         ),
                       )
-                    // Móvil (Android/iOS): requiere webview_flutter.
-                    // Ver home_screen_mobile.dart como referencia.
-                    : Center(
-                        child: Text(
-                          'Abre la app en Chrome o en el móvil para ver el mapa.',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
+                    // Móvil (Android/iOS): cede todos los gestos al WebView.
+                    // _EagerVerticalDrag evita que el ScrollView padre gane
+                    // la arena de gestos en el eje vertical.
+                    : WebViewWidget(
+                        controller: _webViewController!,
+                        gestureRecognizers: {
+                          Factory<_EagerVerticalDrag>(
+                            () => _EagerVerticalDrag(),
                           ),
-                        ),
+                          Factory<HorizontalDragGestureRecognizer>(
+                            () => HorizontalDragGestureRecognizer(),
+                          ),
+                          Factory<ScaleGestureRecognizer>(
+                            () => ScaleGestureRecognizer(),
+                          ),
+                        },
                       ),
           ),
         ],
