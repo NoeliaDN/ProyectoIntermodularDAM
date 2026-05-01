@@ -1,8 +1,7 @@
 # World Coffee Atlas
 
-Aplicación intermodular DAM que combina una **API REST** en **ASP.NET Core**, dashboards de **Power BI** y una app multiplataforma en **Flutter** para explorar variedades de café y sus productores a nivel mundial.
+Aplicación para el Proyecto Intermodular del CFGS Desarrollo de Aplicaciones Multiplataforma que combina una **API REST** en **ASP.NET Core**, dashboards de **Power BI** y una app multiplataforma en **Flutter** para explorar, a modo de Wiki, las diversas características de los cafés de especialidad, sus variedades y productores a nivel mundial, con un enfoque fácilmente accesible y predominantemente visual.
 
----
 
 ## Estructura del repositorio
 
@@ -14,7 +13,7 @@ ProyectoIntermodularDAM/
 └── ScriptsBD/    # Scripts SQL para crear y poblar la base de datos
 ```
 
----
+
 
 ## Requisitos técnicos
 
@@ -28,7 +27,7 @@ ProyectoIntermodularDAM/
 | VS Code + extensiones Flutter/Dart | última estable |
 | Google Chrome o Microsoft Edge | última estable |
 
----
+
 
 ## Puesta en marcha
 
@@ -79,7 +78,7 @@ flutter run -d emulator-5554
 
 Abre los archivos `.pbix` de la carpeta `PowerBI/` con Power BI Desktop para ver o editar los dashboards. Las URLs públicas ya están configuradas en la app (dashboards originales publicados).
 
----
+
 
 ## Dependencias Flutter principales
 
