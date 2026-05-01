@@ -1,8 +1,7 @@
 # World Coffee Atlas
 
-Aplicación intermodular DAM que combina una **API REST** en **ASP.NET Core**, dashboards de **Power BI** y una app multiplataforma en **Flutter** para explorar variedades de café y sus productores a nivel mundial.
+Aplicación para el Proyecto Intermodular del CFGS Desarrollo de Aplicaciones Multiplataforma que combina una **API REST** en **ASP.NET Core**, dashboards de **Power BI** y una app multiplataforma en **Flutter** para explorar, a modo de Wiki, las diversas características de los cafés de especialidad, sus variedades y productores a nivel mundial, con un enfoque fácilmente accesible y predominantemente visual.
 
----
 
 ## Estructura del repositorio
 
@@ -14,7 +13,7 @@ ProyectoIntermodularDAM/
 └── ScriptsBD/    # Scripts SQL para crear y poblar la base de datos
 ```
 
----
+
 
 ## Requisitos técnicos
 
@@ -24,12 +23,11 @@ ProyectoIntermodularDAM/
 | Dart SDK | 3.11.x |
 | Visual Studio 2022 Community | 17.x |
 | .NET SDK | 8.0 |
-| SQL Server Express | 2022 - 2025 |
-| SQL Server Management Studio | 2022 (SSMS) |
-| Power BI Desktop | última estable |
+| SQL Server Express | 2022 / 2025 |
 | VS Code + extensiones Flutter/Dart | última estable |
+| Google Chrome o Microsoft Edge | última estable |
 
----
+
 
 ## Puesta en marcha
 
@@ -61,9 +59,11 @@ cd Flutter/wca_app
 flutter pub get
 ```
 
-**Web (Chrome/Edge):**
+**Web (Chrome o Edge):**
 ```bash
 flutter run -d chrome
+# o bien:
+flutter run -d edge
 ```
 
 **Emulador Android:**
@@ -72,18 +72,13 @@ flutter emulators --launch <nombre_emulador>
 flutter run -d emulator-5554
 ```
 
-**Windows:**
-```bash
-flutter run -d windows
-```
-
 > El certificado TLS de desarrollo de ASP.NET Core es auto-firmado. En Android el cliente HTTP lo acepta automáticamente (solo en desarrollo, para agilizar).
 
 ### 4. Power BI
 
 Abre los archivos `.pbix` de la carpeta `PowerBI/` con Power BI Desktop para ver o editar los dashboards. Las URLs públicas ya están configuradas en la app (dashboards originales publicados).
 
----
+
 
 ## Dependencias Flutter principales
 

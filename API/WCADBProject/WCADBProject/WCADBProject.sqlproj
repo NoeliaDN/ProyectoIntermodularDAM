@@ -87,4 +87,7 @@
     <None Include="scripts\_bkp_SeedData_WorldCoffeeDB.sql" />
     <None Include="scripts\_bkp_fullDB_2026-04-02.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="scripts\SeedData.sql" />
+  </ItemGroup>
 </Project>
