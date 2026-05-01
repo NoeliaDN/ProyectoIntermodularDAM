@@ -24,10 +24,9 @@ ProyectoIntermodularDAM/
 | Dart SDK | 3.11.x |
 | Visual Studio 2022 Community | 17.x |
 | .NET SDK | 8.0 |
-| SQL Server Express | 2022 - 2025 |
-| SQL Server Management Studio | 2022 (SSMS) |
-| Power BI Desktop | última estable |
+| SQL Server Express | 2022 / 2025 |
 | VS Code + extensiones Flutter/Dart | última estable |
+| Google Chrome o Microsoft Edge | última estable |
 
 ---
 
@@ -61,20 +60,17 @@ cd Flutter/wca_app
 flutter pub get
 ```
 
-**Web (Chrome/Edge):**
+**Web (Chrome o Edge):**
 ```bash
 flutter run -d chrome
+# o bien:
+flutter run -d edge
 ```
 
 **Emulador Android:**
 ```bash
 flutter emulators --launch <nombre_emulador>
 flutter run -d emulator-5554
-```
-
-**Windows:**
-```bash
-flutter run -d windows
 ```
 
 > El certificado TLS de desarrollo de ASP.NET Core es auto-firmado. En Android el cliente HTTP lo acepta automáticamente (solo en desarrollo, para agilizar).
