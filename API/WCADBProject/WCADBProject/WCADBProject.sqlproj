@@ -81,6 +81,7 @@
     <Build Include="Security\origen.sql" />
     <Build Include="Security\maestra.sql" />
     <Build Include="Security\cafe.sql" />
+    <Build Include="scripts\_bkp_fullDB_2026-04-30.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\_bkp_CREATE_WorldCoffeeDB_1.sql" />
