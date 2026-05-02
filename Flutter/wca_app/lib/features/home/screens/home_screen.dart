@@ -11,7 +11,7 @@ import 'home_screen_mobile.dart' if (dart.library.html) 'home_screen_web.dart'
 /// Delega la construcción del body a ficheros específicos de plataforma:
 /// - [home_screen_mobile.dart] → usa WebView (Android/iOS).
 /// - [home_screen_web.dart]    → usa un iframe HTML nativo (Chrome/Edge).
-/// - En Windows/Linux/macOS    → muestra un aviso (no soportado).
+/// - En Windows/Linux/macOS    → muestra un aviso (no soportado en la MVP).
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 

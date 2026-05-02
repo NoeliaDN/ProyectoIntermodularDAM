@@ -4,10 +4,7 @@ import 'package:wca_app/features/splash/screens/splash_screen.dart';
 
 /// Widget raíz de la aplicación World Coffee Atlas.
 ///
-/// Se separa de [main.dart] siguiendo la convención de Flutter para:
-/// - Centralizar la configuración de [MaterialApp] (tema, rutas, locale).
-/// - Facilitar el testing (se puede envolver en widgets de test).
-/// - Mantener [main.dart] limpio y minimalista.
+/// Se separa de [main.dart] siguiendo la convención de Flutter.
 class WcaApp extends StatelessWidget {
   const WcaApp({super.key});
 

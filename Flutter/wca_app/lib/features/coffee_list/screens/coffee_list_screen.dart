@@ -43,7 +43,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
     super.initState();
        
     //_loadCoffeeNames(); //cargar nombres al entrar en pantalla
-    _loadInitialData(); // Cargamos nombres y altitudes a la vez
+    _loadInitialData(); // Cargamos nombres y altitudes a la vez mejor
   }
 
   @override
@@ -89,7 +89,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
     });
 
     try {
-      final results = await Future.wait([// para ejecutarllas a la vez
+      final results = await Future.wait([// para ejecutarlas a la vez
         _apiService.fetchCoffeeInfo(id),
         _apiService.fetchCoffeeSca(id),
       ]);
@@ -629,7 +629,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
 
   /// Devuelve los datos visuales (color e icono) para cada proceso.
   /// La descripción viene de la BD para los procesos conocidos.
-  /// Solo el caso default tiene descripción hardcodeada como fallback.
+  /// Solo el caso default tiene descripción hardcodeada como fallback, aunque en el MVP no debería pasar.
   _ProcessData _processData(String proceso) {
     switch (proceso.toLowerCase().trim()) {
       case 'lavado':

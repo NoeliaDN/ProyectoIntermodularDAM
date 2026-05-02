@@ -2,7 +2,7 @@
 ///
 /// Viene del endpoint GET /api/Variedades/detalles/{id}.
 /// Una variedad puede tener 0, 1 o varios cafés asociados, por eso
-/// [cafes] es una lista y puede estar vacía.
+/// [cafes] es una lista y puede estar vacía --> controlado con código en la UI.
 /// 
 class VariedadDetalleDto {
   final int variedadId;
