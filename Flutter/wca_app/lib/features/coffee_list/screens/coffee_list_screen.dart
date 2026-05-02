@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/utils/country_flag.dart';
 import '../models/cafe_nombre_dto.dart';
 import '../models/cafe_lote_dto.dart';
 import '../models/sca_dto.dart';
@@ -139,44 +140,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
     return '';
   }
 
-// ── Helper: bandera del país ─────────────────────────────────────
-  /// Convierte el nombre del país en español al emoji de su bandera (caracter unicode).
-  ///Si el país no está mapeado, devuelve un globo genérico.
-  String _countryFlag(String pais) {
-    const flags = {
-      'etiopía': '🇪🇹', 'etiopia': '🇪🇹',
-      'colombia': '🇨🇴',
-      'brasil': '🇧🇷',
-      'guatemala': '🇬🇹',
-      'costa rica': '🇨🇷',
-      'honduras': '🇭🇳',
-      'perú': '🇵🇪', 'peru': '🇵🇪',
-      'panamá': '🇵🇦', 'panama': '🇵🇦',
-      'jamaica': '🇯🇲',
-      'méxico': '🇲🇽', 'mexico': '🇲🇽',
-      'nicaragua': '🇳🇮',
-      'el salvador': '🇸🇻',
-      'kenia': '🇰🇪', 'kenya': '🇰🇪',
-      'yemen': '🇾🇪',
-      'indonesia': '🇮🇩',
-      'vietnam': '🇻🇳',
-      'india': '🇮🇳',
-      'bolivia': '🇧🇴',
-      'ecuador': '🇪🇨',
-      'república dominicana': '🇩🇴',
-      'cuba': '🇨🇺',
-      'ruanda': '🇷🇼', 'rwanda': '🇷🇼',
-      'uganda': '🇺🇬',
-      'tanzania': '🇹🇿',
-      'papúa nueva guinea': '🇵🇬',
-      'china': '🇨🇳',
-      'tailandia': '🇹🇭',
-      'myanmar': '🇲🇲',
-    };
-    return flags[pais.toLowerCase()] ?? '🌍';
-  }
-
-  // ── UI ───────────────────────────────────────────────────────────
+// ── UI ───────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -356,7 +320,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
                 if (coffee.pais != null) ...
                   [
                     Text(
-                      _countryFlag(coffee.pais!),
+                      countryFlag(coffee.pais!),
                       style: const TextStyle(fontSize: 28),
                     ),
                     const SizedBox(width: 10),
