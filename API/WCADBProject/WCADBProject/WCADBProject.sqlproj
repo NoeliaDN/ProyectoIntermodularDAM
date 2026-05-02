@@ -81,12 +81,6 @@
     <Build Include="Security\origen.sql" />
     <Build Include="Security\maestra.sql" />
     <Build Include="Security\cafe.sql" />
-    <Build Include="scripts\_bkp_fullDB_2026-04-30.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="scripts\_bkp_CREATE_WorldCoffeeDB_1.sql" />
-    <None Include="scripts\_bkp_SeedData_WorldCoffeeDB.sql" />
-    <None Include="scripts\_bkp_fullDB_2026-04-02.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="scripts\SeedData.sql" />
