@@ -34,10 +34,10 @@ ProyectoIntermodularDAM/
 ### 1. Base de datos
 
 1. Abre SSMS y conéctate a tu instancia local de SQL Server.
-2. Ejecuta en orden los scripts de la carpeta `ScriptsBD/`, también disponibles en `API/WCADBProject/scripts` (ejecutables en VS y ocultas con .gitignore hasta el día de la entrega):
-   - Script de creación de tablas
-   - Script de datos iniciales (población)
-3. Anota el nombre de tu instancia (ej. `localhost\SQLEXPRESS`).
+2. Ejecuta en orden los scripts de la carpeta `ScriptsBD/`, también disponibles en `API/WCADBProject/scripts` (ejecutables en VS y ocultos con .gitignore hasta el día de la entrega):
+   - La creación de tablas se hace automáticamente
+   - Script de datos iniciales (población), que se ejecuta tras el CREATE de las tablas.
+3. Anota el nombre de tu instancia (ej. `localhost\SQLEXPRESS`). Si sale un _warning_, poner "\\SQLEXPRESS" en vez de "\SQLEXPRESS"
 
 ### 2. API (ASP.NET Core)
 
