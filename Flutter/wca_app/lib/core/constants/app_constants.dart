@@ -24,7 +24,7 @@ class AppConstants {
   static const String powerBiGlobalUrl =
       'https://app.powerbi.com/view?r=eyJrIjoiMmMwODRhMGUtZTQ1ZC00ZWQxLTkxNDQtYzk1MGEzZjY5NDYwIiwidCI6IjY4NTE5ZTQ4LTgzZjMtNDM1Zi1hMzhhLTFhN2FhNzdiYTk4NyIsImMiOjh9&pageName=f1b3b895ca4a54abef98';
 
-  // TOD0: publicar el dashboard móvil y actualizar URL:
+  // TOD0: publicar un dashboard con diseño móvil y actualizar URL:
   static const String powerBiMobileUrl =
       'https://app.powerbi.com/view?r=eyJrIjoiMmMwODRhMGUtZTQ1ZC00ZWQxLTkxNDQtYzk1MGEzZjY5NDYwIiwidCI6IjY4NTE5ZTQ4LTgzZjMtNDM1Zi1hMzhhLTFhN2FhNzdiYTk4NyIsImMiOjh9&pageName=f1b3b895ca4a54abef98';
 

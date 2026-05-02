@@ -24,9 +24,8 @@ class AppTheme {
     ),
 
     // ── Tipografía ─────────────────────────────────────────────────
-    // De momento usamos la fuente por defecto de Material 3 (Roboto en Android,
-    // San Francisco en iOS). Ya miraré Google Fonts más tarde con textTheme.
-
+    // Usamos la fuente por defecto de Material 3 (Roboto en Android,
+    // San Francisco en iOS). Se incluyen algunas fuentes de Google Fonts también.
     // ── AppBar ─────────────────────────────────────────────────────
     appBarTheme: AppBarTheme(
       centerTitle: true,

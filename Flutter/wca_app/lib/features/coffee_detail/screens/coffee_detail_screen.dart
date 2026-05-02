@@ -3,6 +3,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/utils/country_flag.dart';
+import '../../../core/utils/platform_utils.dart';
 import 'iframe_helper_noweb.dart'
     if (dart.library.html) 'iframe_helper_web.dart';
 import '../models/variedad_nombre_dto.dart';
@@ -165,42 +167,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
     });
   }
 
-  /// Helper: bandera emoji desde nombre de país en español.
-  String _countryFlag(String pais) {
-    const flags = {
-      'etiopía': '🇪🇹', 'etiopia': '🇪🇹',
-      'colombia': '🇨🇴',
-      'brasil': '🇧🇷',
-      'guatemala': '🇬🇹',
-      'costa rica': '🇨🇷',
-      'honduras': '🇭🇳',
-      'perú': '🇵🇪', 'peru': '🇵🇪',
-      'panamá': '🇵🇦', 'panama': '🇵🇦',
-      'jamaica': '🇯🇲',
-      'méxico': '🇲🇽', 'mexico': '🇲🇽',
-      'nicaragua': '🇳🇮',
-      'el salvador': '🇸🇻',
-      'kenia': '🇰🇪', 'kenya': '🇰🇪',
-      'yemen': '🇾🇪',
-      'indonesia': '🇮🇩',
-      'vietnam': '🇻🇳',
-      'india': '🇮🇳',
-      'bolivia': '🇧🇴',
-      'ecuador': '🇪🇨',
-      'república dominicana': '🇩🇴',
-      'cuba': '🇨🇺',
-      'ruanda': '🇷🇼', 'rwanda': '🇷🇼',
-      'uganda': '🇺🇬',
-      'tanzania': '🇹🇿',
-      'papúa nueva guinea': '🇵🇬',
-      'china': '🇨🇳',
-      'tailandia': '🇹🇭',
-      'myanmar': '🇲🇲',
-    };
-    return flags[pais.toLowerCase()] ?? '🌍';
-  }
-
-  // ── UI ───────────────────────────────────────────────────────────
+// ── UI ───────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -353,10 +320,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
   /// SingleChildScrollView pueda calcular su tamaño. Sin altura fija
   /// el iframe intentaría expandirse infinitamente dentro del scroll.
   Widget _buildPowerBiMap(ThemeData theme) {
-    final bool isDesktop = !kIsWeb &&
-        (defaultTargetPlatform == TargetPlatform.windows ||
-            defaultTargetPlatform == TargetPlatform.linux ||
-            defaultTargetPlatform == TargetPlatform.macOS);
+    final bool isDesktop = isDesktopPlatform;
 
     return Card(
       elevation: 0,
@@ -579,7 +543,7 @@ class _CoffeeDetailScreenState extends State<CoffeeDetailScreen> {
               children: [
                 if (cafe.pais != null) ...[
                   Text(
-                    _countryFlag(cafe.pais!),
+                    countryFlag(cafe.pais!),
                     style: const TextStyle(fontSize: 18),
                   ),
                   const SizedBox(width: 8),

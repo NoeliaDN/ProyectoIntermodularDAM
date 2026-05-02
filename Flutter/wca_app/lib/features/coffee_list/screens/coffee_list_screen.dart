@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/utils/country_flag.dart';
 import '../models/cafe_nombre_dto.dart';
 import '../models/cafe_lote_dto.dart';
 import '../models/sca_dto.dart';
@@ -43,7 +44,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
     super.initState();
        
     //_loadCoffeeNames(); //cargar nombres al entrar en pantalla
-    _loadInitialData(); // Cargamos nombres y altitudes a la vez
+    _loadInitialData(); // Cargamos nombres y altitudes a la vez mejor
   }
 
   @override
@@ -89,7 +90,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
     });
 
     try {
-      final results = await Future.wait([// para ejecutarllas a la vez
+      final results = await Future.wait([// para ejecutarlas a la vez
         _apiService.fetchCoffeeInfo(id),
         _apiService.fetchCoffeeSca(id),
       ]);
@@ -139,44 +140,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
     return '';
   }
 
-// ── Helper: bandera del país ─────────────────────────────────────
-  /// Convierte el nombre del país en español al emoji de su bandera (caracter unicode).
-  ///Si el país no está mapeado, devuelve un globo genérico.
-  String _countryFlag(String pais) {
-    const flags = {
-      'etiopía': '🇪🇹', 'etiopia': '🇪🇹',
-      'colombia': '🇨🇴',
-      'brasil': '🇧🇷',
-      'guatemala': '🇬🇹',
-      'costa rica': '🇨🇷',
-      'honduras': '🇭🇳',
-      'perú': '🇵🇪', 'peru': '🇵🇪',
-      'panamá': '🇵🇦', 'panama': '🇵🇦',
-      'jamaica': '🇯🇲',
-      'méxico': '🇲🇽', 'mexico': '🇲🇽',
-      'nicaragua': '🇳🇮',
-      'el salvador': '🇸🇻',
-      'kenia': '🇰🇪', 'kenya': '🇰🇪',
-      'yemen': '🇾🇪',
-      'indonesia': '🇮🇩',
-      'vietnam': '🇻🇳',
-      'india': '🇮🇳',
-      'bolivia': '🇧🇴',
-      'ecuador': '🇪🇨',
-      'república dominicana': '🇩🇴',
-      'cuba': '🇨🇺',
-      'ruanda': '🇷🇼', 'rwanda': '🇷🇼',
-      'uganda': '🇺🇬',
-      'tanzania': '🇹🇿',
-      'papúa nueva guinea': '🇵🇬',
-      'china': '🇨🇳',
-      'tailandia': '🇹🇭',
-      'myanmar': '🇲🇲',
-    };
-    return flags[pais.toLowerCase()] ?? '🌍';
-  }
-
-  // ── UI ───────────────────────────────────────────────────────────
+// ── UI ───────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -356,7 +320,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
                 if (coffee.pais != null) ...
                   [
                     Text(
-                      _countryFlag(coffee.pais!),
+                      countryFlag(coffee.pais!),
                       style: const TextStyle(fontSize: 28),
                     ),
                     const SizedBox(width: 10),
@@ -629,7 +593,7 @@ class _CoffeeListScreenState extends State<CoffeeListScreen> {
 
   /// Devuelve los datos visuales (color e icono) para cada proceso.
   /// La descripción viene de la BD para los procesos conocidos.
-  /// Solo el caso default tiene descripción hardcodeada como fallback.
+  /// Solo el caso default tiene descripción hardcodeada como fallback, aunque en el MVP no debería pasar.
   _ProcessData _processData(String proceso) {
     switch (proceso.toLowerCase().trim()) {
       case 'lavado':

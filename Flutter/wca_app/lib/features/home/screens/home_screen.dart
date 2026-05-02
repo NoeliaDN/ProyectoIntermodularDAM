@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../../../core/utils/platform_utils.dart';
 
 // Importamos WebView solo en móvil (Android/iOS).
 // En web usamos HtmlElementView con un iframe.
@@ -11,15 +11,11 @@ import 'home_screen_mobile.dart' if (dart.library.html) 'home_screen_web.dart'
 /// Delega la construcción del body a ficheros específicos de plataforma:
 /// - [home_screen_mobile.dart] → usa WebView (Android/iOS).
 /// - [home_screen_web.dart]    → usa un iframe HTML nativo (Chrome/Edge).
-/// - En Windows/Linux/macOS    → muestra un aviso (no soportado).
+/// - En Windows/Linux/macOS    → muestra un aviso (no soportado en la MVP).
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  bool get _isDesktop =>//en apps de escritorio ponemos un mensaje de momento
-      !kIsWeb &&
-      (defaultTargetPlatform == TargetPlatform.windows ||
-      defaultTargetPlatform == TargetPlatform.linux ||
-      defaultTargetPlatform == TargetPlatform.macOS);
+  bool get _isDesktop => isDesktopPlatform;
 
   @override
   Widget build(BuildContext context) {
