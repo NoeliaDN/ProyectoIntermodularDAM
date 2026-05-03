@@ -2,7 +2,9 @@
 
 Aplicación para el Proyecto Intermodular del **CFGS Desarrollo de Aplicaciones Multiplataforma** que combina una **API REST** en **ASP.NET Core**, dashboards de **Power BI** y una app multiplataforma en **Flutter** para explorar, a modo de Wiki, las diversas características de los cafés de especialidad, sus variedades y productores a nivel mundial, con un enfoque fácilmente accesible y predominantemente visual.
 
-**Autor**: Noelia Delgado Noguerales (**_NoeliaDN_**) [![LinkedIn](https://img.shields.io/badge/LinkedIn-blue?logo=linkedin&style=flat-square)](https://www.linkedin.com/in/noelia-delgado-1b9426193/)
+**Autor**: Noelia Delgado Noguerales ([**_NoeliaDN_**](https://github.com/NoeliaDN)) 
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-blue?logo=linkedin&style=flat-square)](https://www.linkedin.com/in/noelia-delgado-1b9426193/)
 
 
 ## Estructura del repositorio
